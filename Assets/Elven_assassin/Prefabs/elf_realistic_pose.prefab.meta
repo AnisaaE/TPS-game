@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f73d68f6d4a59bd46a40d604b7c677cd
+timeCreated: 1436800536
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 9690
+  packageName: Elven Assassin
+  packageVersion: 1.2
+  assetPath: Assets/Elven_assassin/Prefabs/elf_realistic_pose.prefab
+  uploadId: 72309

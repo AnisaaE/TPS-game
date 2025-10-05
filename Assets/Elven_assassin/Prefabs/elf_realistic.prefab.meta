@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 2a9f79aa3d5acac4fb4244803f1bfefe
+timeCreated: 1436727031
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 9690
+  packageName: Elven Assassin
+  packageVersion: 1.2
+  assetPath: Assets/Elven_assassin/Prefabs/elf_realistic.prefab
+  uploadId: 72309

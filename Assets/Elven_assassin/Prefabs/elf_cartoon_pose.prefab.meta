@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 28ca59b1aaa5d804ab5fce89c0b01531
+timeCreated: 1436800660
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 9690
+  packageName: Elven Assassin
+  packageVersion: 1.2
+  assetPath: Assets/Elven_assassin/Prefabs/elf_cartoon_pose.prefab
+  uploadId: 72309

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 960180226ce71bc42a5c4a721017b2fc
+timeCreated: 1436797415
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 9690
+  packageName: Elven Assassin
+  packageVersion: 1.2
+  assetPath: Assets/Elven_assassin/Textures/Materials/Cartoon/face_cartoon.mat
+  uploadId: 72309

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: a58bbeeccea4db440939a99a28cca4c3
+timeCreated: 1436797415
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 9690
+  packageName: Elven Assassin
+  packageVersion: 1.2
+  assetPath: Assets/Elven_assassin/Textures/Materials/Cartoon/stone_cartoon.mat
+  uploadId: 72309

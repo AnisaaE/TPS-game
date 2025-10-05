@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 330a474cbf20d9d418c638fad50ab26b
+timeCreated: 1436800662
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 9690
+  packageName: Elven Assassin
+  packageVersion: 1.2
+  assetPath: Assets/Elven_assassin/Prefabs/platform_cartoon.prefab
+  uploadId: 72309
