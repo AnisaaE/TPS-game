@@ -1,4 +1,5 @@
 {
+    "version": 1,
     "name": "InputSystem_Actions",
     "maps": [
         {
@@ -986,6 +987,34 @@
                     "processors": "",
                     "groups": "XR",
                     "action": "TrackedDeviceOrientation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "CameraControl",
+            "id": "d1f7f5da-3ccd-4034-bc53-288d2c02c141",
+            "actions": [
+                {
+                    "name": "Mouse zoom",
+                    "type": "Value",
+                    "id": "c26659ae-62d5-43d4-8bb7-c951a348169d",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "f755e2b6-ff15-4f22-84ec-ae95fae7c3a9",
+                    "path": "<Mouse>/scroll",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Mouse zoom",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
