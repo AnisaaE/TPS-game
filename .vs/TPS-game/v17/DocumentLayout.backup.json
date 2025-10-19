@@ -3,8 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\Rana Karag\u00F6l\\Documents\\GitHub\\TPS-game\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Rana Karag\u00F6l\\Documents\\GitHub\\TPS-game\\Library\\PackageCache\\com.unity.collab-proxy@ab839cc7d2ad\\Editor\\FindWorkspace.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Library\\PackageCache\\com.unity.collab-proxy@ab839cc7d2ad\\Editor\\FindWorkspace.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3B85A5E9-B044-3B03-EF2A-B4E70F8A73B7}|Assembly-CSharp.csproj|c:\\users\\rana karag\u00F6l\\documents\\github\\tps-game\\assets\\playercontroler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B85A5E9-B044-3B03-EF2A-B4E70F8A73B7}|Assembly-CSharp.csproj|solutionrelative:assets\\playercontroler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B85A5E9-B044-3B03-EF2A-B4E70F8A73B7}|Assembly-CSharp.csproj|c:\\users\\rana karag\u00F6l\\documents\\github\\tps-game\\assets\\scripts\\npc_ai.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B85A5E9-B044-3B03-EF2A-B4E70F8A73B7}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\npc_ai.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -19,14 +23,27 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "FindWorkspace.cs",
-              "DocumentMoniker": "C:\\Users\\Rana Karag\u00F6l\\Documents\\GitHub\\TPS-game\\Library\\PackageCache\\com.unity.collab-proxy@ab839cc7d2ad\\Editor\\FindWorkspace.cs",
-              "RelativeDocumentMoniker": "Library\\PackageCache\\com.unity.collab-proxy@ab839cc7d2ad\\Editor\\FindWorkspace.cs",
-              "ToolTip": "C:\\Users\\Rana Karag\u00F6l\\Documents\\GitHub\\TPS-game\\Library\\PackageCache\\com.unity.collab-proxy@ab839cc7d2ad\\Editor\\FindWorkspace.cs",
-              "RelativeToolTip": "Library\\PackageCache\\com.unity.collab-proxy@ab839cc7d2ad\\Editor\\FindWorkspace.cs",
-              "ViewState": "AgIAAAwAAAAAAAAAAAAAABwAAAA7AAAAAAAAAA==",
+              "Title": "playerControler.cs",
+              "DocumentMoniker": "C:\\Users\\Rana Karag\u00F6l\\Documents\\GitHub\\TPS-game\\Assets\\playerControler.cs",
+              "RelativeDocumentMoniker": "Assets\\playerControler.cs",
+              "ToolTip": "C:\\Users\\Rana Karag\u00F6l\\Documents\\GitHub\\TPS-game\\Assets\\playerControler.cs",
+              "RelativeToolTip": "Assets\\playerControler.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-09T13:42:16.168Z",
+              "WhenOpened": "2025-10-17T18:05:10.33Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Npc_AI.cs",
+              "DocumentMoniker": "C:\\Users\\Rana Karag\u00F6l\\Documents\\GitHub\\TPS-game\\Assets\\Scripts\\Npc_AI.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Npc_AI.cs",
+              "ToolTip": "C:\\Users\\Rana Karag\u00F6l\\Documents\\GitHub\\TPS-game\\Assets\\Scripts\\Npc_AI.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Npc_AI.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-17T16:51:52.932Z",
               "EditorCaption": ""
             }
           ]
