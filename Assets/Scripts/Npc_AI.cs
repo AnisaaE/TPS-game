@@ -1,84 +1,285 @@
 using UnityEngine;
 using UnityEngine.AI;
 
+// NPC'nin olabileceï¿½i durumlarï¿½ tanï¿½mlï¿½yoruz
+public enum NPCState
+{
+    InitialIdle,    // Oyun baï¿½ladï¿½ï¿½ï¿½nda kï¿½sa bekleme
+    Patrol,         // Haritada rastgele devriye gezme
+    RestIdle,       // Periyodik dinlenme/bekleme durumu
+    Chase,          // Yeni: Kovalama
+    Shoot           // Yeni: Atï¿½ï¿½/Saldï¿½rï¿½
+}
+
 public class Npc_AI : MonoBehaviour
 {
-    // Mevcut deðiþkenler
+    [Header("Hareket Ayarlarï¿½")]
+    public float patrolSpeed = 1.5f;
     public float walkRadius = 20f;
     public float minWaitTime = 1f;
     public float maxWaitTime = 3f;
     private float nextDestinationTime;
 
-    // YENÝ EKLENEN DEÐÝÞKENLER
-    [Header("Animasyon ve Durum Kontrolü")]
-    private Animator animator;
-    public float initialIdleDuration = 10f; // Baþlangýç bekleme süresi
-    private float initialIdleTimer = 0f;
-    private bool isInitialIdleDone = false;
-
+    [Header("Durum Kontrolï¿½")]
+    public NPCState currentState;
     private NavMeshAgent agent;
+    private Animator animator;
+
+    [Header("Idle/Dinlenme Sï¿½releri")]
+    public float initialIdleDuration = 5f;
+    private float initialIdleTimer = 0f;
+    public float patrolDuration = 15f;
+    private float patrolTimer;
+    public float restIdleDuration = 3f;
+    private float restIdleTimer;
+
+    // YENï¿½ EKLENEN Vï¿½ZYON VE KOVALAMA DEï¿½ï¿½ï¿½KENLERï¿½
+    [Header("Gï¿½rï¿½ï¿½ ve Kovalama Ayarlarï¿½")]
+    public float sightRange = 15f;    // NPC'nin gï¿½rebileceï¿½i maksimum mesafe
+    public float sightAngle = 90f;    // NPC'nin gï¿½rï¿½ï¿½ aï¿½ï¿½sï¿½
+    public float chaseSpeed = 4.0f;   // Kovalama durumunda kullanï¿½lacak hï¿½z
+    public float shootRange = 5f;     // Atï¿½ï¿½ menzili
+    public LayerMask playerMask;      // Oyuncunun bulunduï¿½u Layer
+
+    private Transform playerTarget;   // Bulunan oyuncunun transform'u
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        animator = GetComponent<Animator>(); // Animator bileþenini al
+        animator = GetComponent<Animator>();
 
         if (agent == null || animator == null)
         {
-            Debug.LogError("NavMeshAgent veya Animator bileþeni bulunamadý!");
+            Debug.LogError("NavMeshAgent veya Animator bileï¿½eni bulunamadï¿½!");
             enabled = false;
             return;
         }
 
-        // Baþlangýçta 10 saniye beklemesi için NPC'yi durdur
+        agent.speed = patrolSpeed;
+        currentState = NPCState.InitialIdle;
         agent.isStopped = true;
+        patrolTimer = patrolDuration;
     }
 
     void Update()
     {
-        // 1. BAÞLANGIÇTA IDLE SÜRESÝ KONTROLÜ
-        if (!isInitialIdleDone)
+        // NPC'nin durumu ne olursa olsun (Idle, Patrol, Rest) oyuncuyu algï¿½lamaya ï¿½alï¿½ï¿½
+        CheckForPlayer();
+
+        switch (currentState)
         {
-            // IDLE animasyonu için Speed parametresini 0 yap
-            animator.SetFloat("Speed", 0f);
-
-            initialIdleTimer += Time.deltaTime;
-
-            if (initialIdleTimer >= initialIdleDuration)
-            {
-                isInitialIdleDone = true;
-                agent.isStopped = false; // NPC'yi hareket ettirmeye baþla
-                SetNewRandomDestination(); // Ýlk devriye hedefini belirle
-                Debug.Log("10 saniyelik bekleme bitti, devriye baþlýyor.");
-            }
-            return; // 10 saniye dolana kadar Update'in geri kalanýný çalýþtýrma
+            case NPCState.InitialIdle:
+                HandleInitialIdleState();
+                break;
+            case NPCState.Patrol:
+                HandlePatrolState();
+                break;
+            case NPCState.RestIdle:
+                HandleRestIdleState();
+                break;
+            case NPCState.Chase:
+                HandleChaseState();
+                break;
+            case NPCState.Shoot: // <-- Yeni durum
+                HandleShootState();
+                break;
         }
 
-        // 2. DEVRIYE (PATROL) MANTIÐI
+        UpdateAnimatorSpeed();
+    }
 
-        // Animasyon kontrolü: Agent'ýn gerçek hýzýný al ve Animator'daki Speed parametresine set et.
-        // agent.velocity.magnitude -> Ajanýn gerçek hareket hýzý
-        // agent.speed -> Ajanýn maksimum ayarlanmýþ hýzý (hýzý normalize etmek için kullandýk)
-        float normalizedSpeed = agent.velocity.magnitude / agent.speed;
-        animator.SetFloat("Speed", normalizedSpeed);
+    // Oyuncunun hareket edip etmediï¿½ini kontrol eden varsayï¿½msal fonksiyon
+    // NOT: Bu fonksiyonun doï¿½ru ï¿½alï¿½ï¿½masï¿½ iï¿½in, oyuncu objenizde bir Rigidbody veya NavMeshAgent
+    // bileï¿½eninin olmasï¿½ ve hareket ettiï¿½inde hï¿½zï¿½nï¿½n sï¿½fï¿½rdan bï¿½yï¿½k olmasï¿½ gerekir.
+    bool IsPlayerIdle(Transform target)
+    {
+        // 1. Oyuncunun NavMeshAgent'ï¿½ varsa, hï¿½zï¿½nï¿½ kontrol et
+        NavMeshAgent playerAgent = target.GetComponent<NavMeshAgent>();
+        if (playerAgent != null)
+        {
+            return playerAgent.velocity.magnitude < 0.1f;
+        }
+
+        // 2. Oyuncunun Rigidbody'si varsa, hï¿½zï¿½nï¿½ kontrol et
+        Rigidbody playerRb = target.GetComponent<Rigidbody>();
+        if (playerRb != null)
+        {
+            return playerRb.linearVelocity.magnitude < 0.1f;
+        }
+
+        // Eï¿½er oyuncu bir NavMeshAgent veya Rigidbody kullanmï¿½yorsa,
+        // bu mantï¿½k doï¿½ru ï¿½alï¿½ï¿½mayabilir. Bu durumda bu satï¿½rï¿½ kendi Player Controller kodunuza gï¿½re dï¿½zenlemelisiniz.
+        return false; // Varsayï¿½lan olarak hareket ettiï¿½ini varsayalï¿½m.
+    }
 
 
-        // Hedefe ulaþtýysa ve bekleme süresi dolduysa
+    // Oyuncu algï¿½lama ve durum deï¿½iï¿½tirme mantï¿½ï¿½ï¿½nï¿½ barï¿½ndï¿½rï¿½r
+    void CheckForPlayer()
+    {
+        // NPC'den sightRange kadar uzaktaki, PlayerMask'taki collider'larï¿½ kontrol et
+        Collider[] rangeChecks = Physics.OverlapSphere(transform.position, sightRange, playerMask);
+
+        if (rangeChecks.Length > 0)
+        {
+            Transform target = rangeChecks[0].transform;
+            Vector3 directionToTarget = (target.position - transform.position).normalized;
+            float distanceToTarget = Vector3.Distance(transform.position, target.position);
+
+            // 1. Gï¿½rï¿½ï¿½ aï¿½ï¿½sï¿½ ve engel kontrolï¿½ (Kesmeyi ï¿½nlemek iï¿½in)
+            if (Vector3.Angle(transform.forward, directionToTarget) < sightAngle / 2 &&
+                !Physics.Raycast(transform.position, directionToTarget, distanceToTarget, ~playerMask))
+            {
+                playerTarget = target; // Oyuncu gï¿½rï¿½ldï¿½!
+
+                // 2. YENï¿½ MANTIK: Atï¿½ï¿½ menzili ve Player'ï¿½n durumu
+                if (distanceToTarget <= shootRange && IsPlayerIdle(target))
+                {
+                    ChangeState(NPCState.Shoot);
+                }
+                // 3. Mevcut durum Shoot deï¿½ilse veya mesafesi Shoot menzili dï¿½ï¿½ï¿½ndaysa Chase'e geï¿½
+                else if (currentState != NPCState.Shoot)
+                {
+                    ChangeState(NPCState.Chase);
+                }
+            }
+        }
+        else // Menzilde oyuncu yoksa
+        {
+            playerTarget = null;
+            // Kovalama veya Atï¿½ï¿½ durumundayken oyuncu kaybolursa Devriyeye dï¿½n
+            if (currentState == NPCState.Chase || currentState == NPCState.Shoot)
+            {
+                ChangeState(NPCState.Patrol);
+            }
+        }
+    }
+
+    #region STATE HANDLERS
+
+    void HandleInitialIdleState()
+    {
+        // ... (Aynï¿½ kalï¿½r) ...
+        initialIdleTimer += Time.deltaTime;
+        if (initialIdleTimer >= initialIdleDuration)
+        {
+            ChangeState(NPCState.Patrol);
+        }
+    }
+
+    void HandlePatrolState()
+    {
+        // ... (Aynï¿½ kalï¿½r) ...
+        patrolTimer -= Time.deltaTime;
+        if (patrolTimer <= 0)
+        {
+            ChangeState(NPCState.RestIdle);
+            return;
+        }
+
         if (agent.remainingDistance <= agent.stoppingDistance)
         {
-            // Yeni bir hedef belirlemeden önce bekleme süresi doldu mu?
             if (Time.time >= nextDestinationTime)
             {
-                // SetNewRandomDestination() fonksiyonu içinde zaten agent.SetDestination çaðrýlýyor.
                 SetNewRandomDestination();
             }
         }
     }
 
-    // ... SetNewRandomDestination ve GetRandomPoint fonksiyonlarý ayný kalýr.
+    void HandleRestIdleState()
+    {
+        // ... (Aynï¿½ kalï¿½r) ...
+        restIdleTimer += Time.deltaTime;
+        if (restIdleTimer >= restIdleDuration)
+        {
+            ChangeState(NPCState.Patrol);
+        }
+    }
+
+    void HandleChaseState()
+    {
+        if (playerTarget != null)
+        {
+            agent.SetDestination(playerTarget.position);
+
+            // Kovalama durumunda NPC'nin sï¿½rekli hedefe dï¿½nmesini saï¿½la
+            Vector3 lookDirection = playerTarget.position - transform.position;
+            lookDirection.y = 0; // Y eksenini sï¿½fï¿½rla
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDirection), Time.deltaTime * 5f);
+        }
+    }
+
+    void HandleShootState()
+    {
+        // Atï¿½ï¿½ durumunda NPC durur
+        // NPC'nin sï¿½rekli oyuncuya bakmasï¿½nï¿½ saï¿½la
+        if (playerTarget != null)
+        {
+            Vector3 lookDirection = playerTarget.position - transform.position;
+            lookDirection.y = 0;
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDirection), Time.deltaTime * 5f);
+        }
+
+        // Atï¿½ï¿½ animasyonu oynatï¿½ldï¿½ktan sonra (Animasyon sï¿½resi bittiï¿½inde) 
+        // otomatik olarak Idle/Chase durumuna dï¿½nmek iï¿½in bir Timer eklenebilir, 
+        // ancak ï¿½imdilik Animator Controller'daki "Exit Time" bu gï¿½revi gï¿½recektir.
+    }
+
+    #endregion
+
+    #region HELPER FUNCTIONS
+
+    void ChangeState(NPCState newState)
+    {
+        // ï¿½nceki durumdan ï¿½ï¿½kï¿½ï¿½ta yapï¿½lmasï¿½ gerekenler
+        if (currentState == NPCState.Shoot)
+        {
+            // Atï¿½ï¿½ bitince silah sesini durdurma vb.
+        }
+
+        currentState = newState;
+
+        // Yeni duruma girerken yapï¿½lmasï¿½ gerekenler
+        if (newState == NPCState.Patrol)
+        {
+            agent.isStopped = false;
+            agent.speed = patrolSpeed;
+            patrolTimer = patrolDuration;
+            SetNewRandomDestination();
+        }
+        else if (newState == NPCState.RestIdle || newState == NPCState.InitialIdle)
+        {
+            agent.isStopped = true; // Idle durumlarï¿½nda hareket etmeyi durdur
+            if (newState == NPCState.RestIdle) restIdleTimer = 0f;
+        }
+        else if (newState == NPCState.Chase)
+        {
+            agent.isStopped = false;
+            agent.speed = chaseSpeed; // Hï¿½zï¿½ kovalamaya yï¿½kselt
+        }
+        else if (newState == NPCState.Shoot) // <-- Shooting durumu giriï¿½i
+        {
+            agent.isStopped = true; // Atï¿½ï¿½ yaparken dur
+            animator.SetTrigger("ShootTrigger"); // Atï¿½ï¿½ animasyonunu tetikle!
+        }
+    }
+
+    void UpdateAnimatorSpeed()
+    {
+        if (currentState == NPCState.InitialIdle || currentState == NPCState.RestIdle || currentState == NPCState.Shoot)
+        {
+            animator.SetFloat("Speed", 0f);
+        }
+        else
+        {
+            float normalizedSpeed = agent.velocity.magnitude / agent.speed;
+            animator.SetFloat("Speed", normalizedSpeed);
+        }
+    }
+
+    // ... (SetNewRandomDestination ve GetRandomPoint aynï¿½ kalï¿½r) ...
+
     private void SetNewRandomDestination()
     {
-        // ... (Eski kodunuz ayný kalacak) ...
         Vector3 randomPoint = GetRandomPoint(transform.position, walkRadius);
         agent.SetDestination(randomPoint);
         nextDestinationTime = Time.time + Random.Range(minWaitTime, maxWaitTime);
@@ -86,7 +287,6 @@ public class Npc_AI : MonoBehaviour
 
     private Vector3 GetRandomPoint(Vector3 center, float radius)
     {
-        // ... (Eski kodunuz ayný kalacak) ...
         Vector3 randomDirection = Random.insideUnitSphere * radius;
         randomDirection += center;
 
@@ -97,4 +297,6 @@ public class Npc_AI : MonoBehaviour
         }
         return center;
     }
+
+    #endregion
 }

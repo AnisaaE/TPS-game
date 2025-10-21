@@ -957,10 +957,10 @@ PrefabInstance:
       addedObject: {fileID: 974505620}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8c4e54e47c932634b8580424a1ec744f, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 974505618}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8c4e54e47c932634b8580424a1ec744f, type: 3}
+      addedObject: {fileID: 974505621}
+    - targetCorrespondingSourceObject: {fileID: 3743993344710040121, guid: 8c4e54e47c932634b8580424a1ec744f, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 974505620}
+      addedObject: {fileID: 1474036561}
   m_SourcePrefab: {fileID: 100100000, guid: 8c4e54e47c932634b8580424a1ec744f, type: 3}
 --- !u!1 &315136619
 GameObject:
@@ -3194,19 +3194,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8c4e54e47c932634b8580424a1ec744f, type: 3}
   m_PrefabInstance: {fileID: 279744049}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &974505617
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 974505614}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e19309d63ce96a74db33b043e784f516, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::playerControler
-  speed: 5
 --- !u!54 &974505618
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3243,13 +3230,34 @@ MonoBehaviour:
   m_GameObject: {fileID: 974505614}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b66d4a0c1b32ed844b6df9e6988c18af, type: 3}
+  m_Script: {fileID: 11500000, guid: e19309d63ce96a74db33b043e784f516, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AttachWeapon
-  weaponPrefab: {fileID: 100000, guid: 6f966b9a7c817ed49973b4a8762cbbdf, type: 3}
-  localPositionOffset: {x: -0.237, y: 0.076, z: -0.05}
-  localRotationOffset: {x: 160, y: 270, z: 0}
-  localScale: {x: 1, y: 1, z: 1}
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerControllerLogic
+  cameraTransform: {fileID: 108682906}
+  speed: 5
+  rotationSpeed: 360
+--- !u!195 &974505621
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 974505614}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.3
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1001 &977368009
 PrefabInstance:
   m_ObjectHideFlags: 0
