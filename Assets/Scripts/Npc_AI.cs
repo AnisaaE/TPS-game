@@ -1,100 +1,168 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class Npc_AI : MonoBehaviour
 {
-    // Mevcut değişkenler
-    public float walkRadius = 20f;
-    public float minWaitTime = 1f;
-    public float maxWaitTime = 3f;
-    private float nextDestinationTime;
+    public NavMeshAgent agent;
+    public Transform player;
 
-    // YENİ EKLENEN DEĞİŞKENLER
-    [Header("Animasyon ve Durum Kontrolü")]
-    private Animator animator;
-    public float initialIdleDuration = 10f; // Başlangıç bekleme süresi
-    private float initialIdleTimer = 0f;
-    private bool isInitialIdleDone = false;
+    [Header("Mesafeler")]
+    public float chaseDistance = 10f;
+    public float attackDistance = 3f;
+    public float patrolRadius = 15f;
+    public float patrolWaitTime = 3f;
+    public float attackRate = 1f; // 1 saniyede bir ateÅŸ et
 
-    private NavMeshAgent agent;
+    [Header("Animasyon")]
+    public Animator animator;
+
+    private Vector3 patrolTarget;
+    private bool isPatrolling = true;
+    private bool isAttacking = false; // AteÅŸ etme durumunu kontrol eder
+    private int attackCount = 0;// Npc kaÃ§ kez ateÅŸ etti sayacaÄŸÄ±z
+    private bool isDead = false;// Npc Ã¶ldÃ¼ mÃ¼ kontrolÃ¼
 
     void Start()
     {
-        agent = GetComponent<NavMeshAgent>();
-        animator = GetComponent<Animator>(); // Animator bileşenini al
-
-        if (agent == null || animator == null)
-        {
-            Debug.LogError("NavMeshAgent veya Animator bileşeni bulunamadı!");
-            enabled = false;
-            return;
-        }
-
-        // Başlangıçta 10 saniye beklemesi için NPC'yi durdur
-        agent.isStopped = true;
+        GoToNextPatrolPoint();
+        StartCoroutine(PatrolRoutine());
     }
-
     void Update()
     {
-        // 1. BAŞLANGIÇTA IDLE SÜRESİ KONTROLÜ
-        if (!isInitialIdleDone)
+        if (isDead) return; // â˜ ï¸ Ã–ldÃ¼yse hiÃ§bir ÅŸey yapma
+        float distance = Vector3.Distance(transform.position, player.position);
+        Vector3 direction = (player.position - transform.position).normalized;
+        float angle = Vector3.Angle(transform.forward, direction);
+
+        if (angle < 120f)
         {
-            // IDLE animasyonu için Speed parametresini 0 yap
-            animator.SetFloat("Speed", 0f);
-
-            initialIdleTimer += Time.deltaTime;
-
-            if (initialIdleTimer >= initialIdleDuration)
+            if (distance <= attackDistance)
             {
-                isInitialIdleDone = true;
-                agent.isStopped = false; // NPC'yi hareket ettirmeye başla
-                SetNewRandomDestination(); // İlk devriye hedefini belirle
-                Debug.Log("10 saniyelik bekleme bitti, devriye başlıyor.");
+                AttackPlayer();
             }
-            return; // 10 saniye dolana kadar Update'in geri kalanını çalıştırma
+            else if (distance <= chaseDistance)
+            {
+                StopCoroutine("AttackLoop");
+                isAttacking = false;
+                animator.SetBool("isShooting", false); // ğŸ”¥ Ekledik
+                ChasePlayer();
+            }
+            else
+            {
+                StopCoroutine("AttackLoop");
+                isAttacking = false;
+                animator.SetBool("isShooting", false); // ğŸ”¥ Ekledik
+                Patrol();
+            }
         }
-
-        // 2. DEVRIYE (PATROL) MANTIĞI
-
-        // Animasyon kontrolü: Agent'ın gerçek hızını al ve Animator'daki Speed parametresine set et.
-        // agent.velocity.magnitude -> Ajanın gerçek hareket hızı
-        // agent.speed -> Ajanın maksimum ayarlanmış hızı (hızı normalize etmek için kullandık)
-        float normalizedSpeed = agent.velocity.magnitude / agent.speed;
-        animator.SetFloat("Speed", normalizedSpeed);
-
-
-        // Hedefe ulaştıysa ve bekleme süresi dolduysa
-        if (agent.remainingDistance <= agent.stoppingDistance)
+        else
         {
-            // Yeni bir hedef belirlemeden önce bekleme süresi doldu mu?
-            if (Time.time >= nextDestinationTime)
-            {
-                // SetNewRandomDestination() fonksiyonu içinde zaten agent.SetDestination çağrılıyor.
-                SetNewRandomDestination();
-            }
+            StopCoroutine("AttackLoop");
+            isAttacking = false;
+            animator.SetBool("isShooting", false); // ğŸ”¥ Ekledik
+            Patrol();
         }
     }
 
-    // ... SetNewRandomDestination ve GetRandomPoint fonksiyonları aynı kalır.
-    private void SetNewRandomDestination()
+
+
+    void Patrol()
     {
-        // ... (Eski kodunuz aynı kalacak) ...
-        Vector3 randomPoint = GetRandomPoint(transform.position, walkRadius);
-        agent.SetDestination(randomPoint);
-        nextDestinationTime = Time.time + Random.Range(minWaitTime, maxWaitTime);
+        if (!agent.pathPending && agent.remainingDistance < 0.5f && isPatrolling)
+        {
+            StartCoroutine(PatrolRoutine());
+        }
+
+        agent.isStopped = false;
+
+        if (animator)
+        {
+            animator.SetBool("isWalking", true);
+            animator.SetBool("isRunning", false);
+        }
     }
 
-    private Vector3 GetRandomPoint(Vector3 center, float radius)
+    void ChasePlayer()
     {
-        // ... (Eski kodunuz aynı kalacak) ...
-        Vector3 randomDirection = Random.insideUnitSphere * radius;
-        randomDirection += center;
+        agent.isStopped = false;
+        agent.SetDestination(player.position);
 
+        if (animator)
+        {
+            animator.SetBool("isRunning", true);
+            animator.SetBool("isWalking", false);
+        }
+    }
+
+    
+    void AttackPlayer()
+    {
+        agent.isStopped = true;
+        transform.LookAt(player);
+
+        if (!isAttacking)
+        {
+            isAttacking = true;
+            StartCoroutine("AttackLoop");
+        }
+
+        if (animator)
+        {
+            animator.SetBool("isRunning", false);
+            animator.SetBool("isWalking", false);
+            // Bu kÄ±sÄ±m sayesinde koÅŸudan, yÃ¼rÃ¼yÃ¼ÅŸten veya idleden geÃ§iÅŸ yapabilir
+        }
+    }
+   
+    IEnumerator AttackLoop()
+    {
+        isAttacking = true;
+        animator.SetBool("isShooting", true); // ğŸ”¥ Animasyon baÅŸlasÄ±n
+
+        while (Vector3.Distance(transform.position, player.position) <= attackDistance)
+        {
+            Debug.Log("NPC ateÅŸ ediyor!");
+            // burada projectile instantiate edebilirsin
+            attackCount++; //Her ateÅŸ ettiÄŸinde sayacÄ± arttÄ±r
+            if (attackCount>=5)
+            {
+                Die();
+                yield break;
+            }
+            yield return new WaitForSeconds(attackRate); // attackRate kadar bekle
+        }
+
+        // Menzilden Ã§Ä±kÄ±nca:
+        isAttacking = false;
+        animator.SetBool("isShooting", false); // âŒ animasyonu kapat
+    }
+
+    IEnumerator PatrolRoutine()
+    {
+        isPatrolling = false;
+        yield return new WaitForSeconds(patrolWaitTime);
+        GoToNextPatrolPoint();
+        isPatrolling = true;
+    }
+
+    void GoToNextPatrolPoint()
+    {
+        Vector3 randomDirection = Random.insideUnitSphere * patrolRadius;
+        randomDirection += transform.position;
         NavMeshHit hit;
-        if (NavMesh.SamplePosition(randomDirection, out hit, radius, NavMesh.AllAreas))
-        {
-            return hit.position;
-        }
-        return center;
+        NavMesh.SamplePosition(randomDirection, out hit, patrolRadius, 1);
+        patrolTarget = hit.position;
+        agent.SetDestination(patrolTarget);
     }
+    
+    void Die()
+    {
+        isDead = true;
+        agent.isStopped = true;
+
+        Debug.Log("Player Ã¶ldÃ¼!");
+
+    }
+
 }
