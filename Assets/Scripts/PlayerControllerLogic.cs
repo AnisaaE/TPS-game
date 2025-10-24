@@ -42,22 +42,18 @@ public class PlayerControllerLogic : MonoBehaviour
 
     private void HandleMovement()
     {
-        // Вземаме входа от контролите
         Vector3 move = new Vector3(moveInput.x, 0f, moveInput.y);
 
         if (move.magnitude >= 0.1f)
         {
-            // Намираме ъгъла спрямо камерата
             float targetAngle = Mathf.Atan2(move.x, move.z) * Mathf.Rad2Deg + cameraTransform.eulerAngles.y;
             float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref smoothTurnVelocity, rotationSpeed * Time.deltaTime);
 
-            // Завъртаме героя плавно
             transform.rotation = Quaternion.Euler(0f, smoothAngle, 0f);
 
-            // Посока на движение
             Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
 
-            // Реално движение
+          
             transform.position += moveDir.normalized * speed * Time.deltaTime;
         }
     }
