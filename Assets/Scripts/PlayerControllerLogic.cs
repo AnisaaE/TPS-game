@@ -8,6 +8,7 @@ public class PlayerControllerLogic : MonoBehaviour
     private Vector2 moveInput;
     private bool isJumping;
     private bool isShooting;
+    private int currentHealth = 100;
 
     [Header("References")]
     public Transform cameraTransform; // <-- за посоката на движение спрямо камерата
@@ -66,5 +67,16 @@ public class PlayerControllerLogic : MonoBehaviour
         animator.SetFloat("Speed", animationSpeed);
         animator.SetBool("IsJumping", isJumping);
         animator.SetBool("IsShooting", isShooting);
+    }
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        Debug.Log($"Player'a {damage} hasar geldi! Kalan can: {currentHealth}");
+
+        if (currentHealth <= 0)
+        {
+            Debug.Log("Player öldü!");
+            // Öldüğünde yapılacaklar
+        }
     }
 }

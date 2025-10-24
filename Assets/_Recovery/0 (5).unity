@@ -1902,8 +1902,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Npc_AI
   agent: {fileID: 659884063}
   player: {fileID: 974505616}
-  maxHealth: 100
-  chaseDistance: 10
+  chaseDistance: 6
   attackDistance: 3
   patrolRadius: 15
   patrolWaitTime: 3
@@ -4175,8 +4174,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Npc_AI
   agent: {fileID: 1099903437}
   player: {fileID: 974505616}
-  maxHealth: 100
-  chaseDistance: 8
+  chaseDistance: 6
   attackDistance: 3
   patrolRadius: 15
   patrolWaitTime: 3
