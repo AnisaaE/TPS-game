@@ -30,6 +30,10 @@ public class PlayerControllerLogic : MonoBehaviour
 
         controls.Player.Shoot.performed += ctx => isShooting = true;
         controls.Player.Shoot.canceled += ctx => isShooting = false;
+
+        controls.Player.QuickTurnLeft.performed += ctx => DoQuickTurn(-90f);  // наляво
+        controls.Player.QuickTurnRight.performed += ctx => DoQuickTurn(90f);  // надясно
+
     }
 
     private void OnEnable() => controls.Player.Enable();
@@ -58,6 +62,12 @@ public class PlayerControllerLogic : MonoBehaviour
             transform.position += moveDir.normalized * speed * Time.deltaTime;
         }
     }
+
+    private void DoQuickTurn(float angle)
+    {
+        transform.Rotate(0f, angle, 0f);
+    }
+
 
     private float smoothTurnVelocity;
 

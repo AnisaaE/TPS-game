@@ -120,13 +120,22 @@ public partial class @PlayerController: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Look"",
-                    ""type"": ""Value"",
-                    ""id"": ""29be7796-4dd0-4449-b407-0aede6adcffc"",
-                    ""expectedControlType"": ""Vector2"",
+                    ""name"": ""QuickTurnLeft"",
+                    ""type"": ""Button"",
+                    ""id"": ""548a7bc6-41e3-4957-b74c-db2c63c96038"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": true
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""QuickTurnRight"",
+                    ""type"": ""Button"",
+                    ""id"": ""9fa84a7c-dfac-436b-8ae7-7c496b300ca8"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -221,7 +230,7 @@ public partial class @PlayerController: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""0e18e91e-201b-4759-8cb1-50ce1cf59bbc"",
-                    ""path"": ""<Mouse>/rightButton"",
+                    ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -231,23 +240,34 @@ public partial class @PlayerController: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""269bf802-993f-4756-a6ae-2d69da3cd354"",
-                    ""path"": """",
+                    ""id"": ""70cedf83-546b-4ce3-8749-43709eeb410f"",
+                    ""path"": ""<Keyboard>/a"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Look"",
+                    ""action"": ""QuickTurnLeft"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""3fc776e7-44b0-43e0-bf1a-08411b3c9f24"",
-                    ""path"": ""<Mouse>/delta"",
+                    ""id"": ""600eea0b-e48c-4353-a15a-e9dea49384f4"",
+                    ""path"": """",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Look"",
+                    ""action"": ""QuickTurnRight"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""462bd796-3889-420b-9bab-6413edf0a7cb"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""QuickTurnRight"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -261,7 +281,8 @@ public partial class @PlayerController: IInputActionCollection2, IDisposable
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         m_Player_Shoot = m_Player.FindAction("Shoot", throwIfNotFound: true);
-        m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
+        m_Player_QuickTurnLeft = m_Player.FindAction("QuickTurnLeft", throwIfNotFound: true);
+        m_Player_QuickTurnRight = m_Player.FindAction("QuickTurnRight", throwIfNotFound: true);
     }
 
     ~@PlayerController()
@@ -345,7 +366,8 @@ public partial class @PlayerController: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Move;
     private readonly InputAction m_Player_Jump;
     private readonly InputAction m_Player_Shoot;
-    private readonly InputAction m_Player_Look;
+    private readonly InputAction m_Player_QuickTurnLeft;
+    private readonly InputAction m_Player_QuickTurnRight;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -370,9 +392,13 @@ public partial class @PlayerController: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @Shoot => m_Wrapper.m_Player_Shoot;
         /// <summary>
-        /// Provides access to the underlying input action "Player/Look".
+        /// Provides access to the underlying input action "Player/QuickTurnLeft".
         /// </summary>
-        public InputAction @Look => m_Wrapper.m_Player_Look;
+        public InputAction @QuickTurnLeft => m_Wrapper.m_Player_QuickTurnLeft;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/QuickTurnRight".
+        /// </summary>
+        public InputAction @QuickTurnRight => m_Wrapper.m_Player_QuickTurnRight;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -408,9 +434,12 @@ public partial class @PlayerController: IInputActionCollection2, IDisposable
             @Shoot.started += instance.OnShoot;
             @Shoot.performed += instance.OnShoot;
             @Shoot.canceled += instance.OnShoot;
-            @Look.started += instance.OnLook;
-            @Look.performed += instance.OnLook;
-            @Look.canceled += instance.OnLook;
+            @QuickTurnLeft.started += instance.OnQuickTurnLeft;
+            @QuickTurnLeft.performed += instance.OnQuickTurnLeft;
+            @QuickTurnLeft.canceled += instance.OnQuickTurnLeft;
+            @QuickTurnRight.started += instance.OnQuickTurnRight;
+            @QuickTurnRight.performed += instance.OnQuickTurnRight;
+            @QuickTurnRight.canceled += instance.OnQuickTurnRight;
         }
 
         /// <summary>
@@ -431,9 +460,12 @@ public partial class @PlayerController: IInputActionCollection2, IDisposable
             @Shoot.started -= instance.OnShoot;
             @Shoot.performed -= instance.OnShoot;
             @Shoot.canceled -= instance.OnShoot;
-            @Look.started -= instance.OnLook;
-            @Look.performed -= instance.OnLook;
-            @Look.canceled -= instance.OnLook;
+            @QuickTurnLeft.started -= instance.OnQuickTurnLeft;
+            @QuickTurnLeft.performed -= instance.OnQuickTurnLeft;
+            @QuickTurnLeft.canceled -= instance.OnQuickTurnLeft;
+            @QuickTurnRight.started -= instance.OnQuickTurnRight;
+            @QuickTurnRight.performed -= instance.OnQuickTurnRight;
+            @QuickTurnRight.canceled -= instance.OnQuickTurnRight;
         }
 
         /// <summary>
@@ -496,11 +528,18 @@ public partial class @PlayerController: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnShoot(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "Look" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "QuickTurnLeft" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnLook(InputAction.CallbackContext context);
+        void OnQuickTurnLeft(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "QuickTurnRight" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnQuickTurnRight(InputAction.CallbackContext context);
     }
 }
