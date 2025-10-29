@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: e19309d63ce96a74db33b043e784f516
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - cameraTransform: {instanceID: 0}
+  - camTarget: {instanceID: 0}
+  - camAimTarget: {instanceID: 0}
+  - weapon: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
