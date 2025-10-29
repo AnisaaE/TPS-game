@@ -21,6 +21,7 @@ public class PlayerControllerLogic : MonoBehaviour
     public float cameraSensitivityX = 250f;
     public float cameraSensitivityY = 120f;
     public float cameraPitchLimit = 80f;
+    public float sensitivityMultiplier = 0.8f;
 
     private float yaw;
     private float pitch;
@@ -57,8 +58,8 @@ public class PlayerControllerLogic : MonoBehaviour
     private void HandleCamera()
     {
         // Обновяване на yaw/pitch от мишката
-        yaw += lookInput.x * cameraSensitivityX * Time.deltaTime;
-        pitch -= lookInput.y * cameraSensitivityY * Time.deltaTime;
+        yaw += lookInput.x * cameraSensitivityX * Time.deltaTime* sensitivityMultiplier;
+        pitch -= lookInput.y * cameraSensitivityY * Time.deltaTime * sensitivityMultiplier;
         pitch = Mathf.Clamp(pitch, -cameraPitchLimit, cameraPitchLimit);
 
         // Прилагаме въртенето върху camTarget
