@@ -1841,6 +1841,10 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: d2f58e2025e392b419f84293e160f840, type: 2}
+    - target: {fileID: 9500000, guid: f4209d51d1ad0434299f2d498ee076ba, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1872,7 +1876,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.6
-  m_Speed: 3.5
+  m_Speed: 1.7
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -1896,14 +1900,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c6f728a84e29534cb46a34c0edc5bb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Npc_AI
+  agent: {fileID: 659884063}
   player: {fileID: 974505616}
-  whatIsGround:
-    serializedVersion: 2
-    m_Bits: 0
-  sightRange: 15
-  attackRange: 3
-  idleTime: 3
-  patrolTime: 15
+  chaseDistance: 6
+  attackDistance: 3
+  patrolRadius: 15
+  patrolWaitTime: 3
+  attackRate: 1
+  animator: {fileID: 659884065}
+--- !u!95 &659884065 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 9500000, guid: f4209d51d1ad0434299f2d498ee076ba, type: 3}
+  m_PrefabInstance: {fileID: 659884060}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &664554703
 GameObject:
   m_ObjectHideFlags: 0
@@ -4104,6 +4113,10 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: d2f58e2025e392b419f84293e160f840, type: 2}
+    - target: {fileID: 9500000, guid: f4209d51d1ad0434299f2d498ee076ba, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4135,7 +4148,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.6
-  m_Speed: 3.5
+  m_Speed: 1.7
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -4159,14 +4172,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c6f728a84e29534cb46a34c0edc5bb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Npc_AI
+  agent: {fileID: 1099903437}
   player: {fileID: 974505616}
-  whatIsGround:
-    serializedVersion: 2
-    m_Bits: 0
-  sightRange: 15
-  attackRange: 3
-  idleTime: 3
-  patrolTime: 15
+  chaseDistance: 6
+  attackDistance: 3
+  patrolRadius: 15
+  patrolWaitTime: 3
+  attackRate: 1
+  animator: {fileID: 1099903439}
+--- !u!95 &1099903439 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 9500000, guid: f4209d51d1ad0434299f2d498ee076ba, type: 3}
+  m_PrefabInstance: {fileID: 1099903434}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1108932474
 PrefabInstance:
   m_ObjectHideFlags: 0
