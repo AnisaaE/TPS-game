@@ -10,10 +10,10 @@ public class Npc_AI : MonoBehaviour
     private int currentHealth;
 
     [Header("Mesafeler")]
-    public float chaseDistance = 8f;
+    public float chaseDistance = 12f;
     public float attackDistance = 3f;
     public float patrolRadius = 15f;
-    public float patrolWaitTime = 3f;
+    public float patrolWaitTime = 2f;
     public float attackRate = 1f; // 1 saniyede bir ateş et
 
     [Header("Animasyon")]
@@ -37,7 +37,7 @@ public class Npc_AI : MonoBehaviour
         Vector3 direction = (player.position - transform.position).normalized;
         float angle = Vector3.Angle(transform.forward, direction);
 
-        if (angle < 120f)
+        if (angle < 160f)
         {
             if (distance <= attackDistance)
             {
@@ -127,7 +127,6 @@ public class Npc_AI : MonoBehaviour
             // Bu kısım sayesinde koşudan, yürüyüşten veya idleden geçiş yapabilir
         }
     }
-
     IEnumerator AttackLoop()
     {
         isAttacking = true;
@@ -138,15 +137,16 @@ public class Npc_AI : MonoBehaviour
             Debug.Log("NPC ateş ediyor!");
 
             // Player'a hasar ver
-            ///////player.GetComponent<PlayerController>().TakeDamage(10); bunu playercontrollerda eklemen gerekiyorrr!!!!!!!!!!!!
+            player.GetComponent<PlayerControllerLogic>().TakeDamage(10); //bunu playercontrollerda eklemen gerekiyorrr!!!!!!!!!!!!
 
             yield return new WaitForSeconds(attackRate);
         }
 
+        // Oyuncu uzaklaştıysa hemen kovalamaya başla
         isAttacking = false;
         animator.SetBool("isShooting", false);
+        ChasePlayer(); // 👈 anında koşmaya geçer
     }
-
     IEnumerator PatrolRoutine()
     {
         isPatrolling = false;

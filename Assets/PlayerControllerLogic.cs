@@ -11,6 +11,10 @@ public class PlayerControllerLogic : MonoBehaviour
     private bool isJumping;
     private bool isAiming;
     private bool isShooting;
+    private bool IsDead;
+    public Image healthBar;
+    [Header("UI")]
+public GameObject gameOverUI;
 
     [Header("References")]
     public CinemachineCamera vCamNormal;   // Normal kamera (VCam_Normal)
@@ -22,6 +26,51 @@ public class PlayerControllerLogic : MonoBehaviour
     public float speed = 5f;
     public float rotationSmoothTime = 0.1f;
     private float rotationSmoothVelocity;
+
+    [Header("Shooting Settings")]
+    public float shootRange = 100f;
+    public int damage = 20;
+    public LayerMask enemyLayer; // Sadece NPC’leri hedef almak için
+    public Transform shootOrigin; // Merminin çıkacağı yer (silahın ucu gibi)
+
+    [Header("Health")]
+    public int maxHealth = 100;
+    private int currentHealth;
+
+    private void Start()
+    {
+        currentHealth = maxHealth;
+    }
+
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        Debug.Log("Player hasar aldı! Kalan can: " + currentHealth);
+        healthBar.fillAmount = (float)currentHealth / maxHealth;
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
+    }
+
+    void Die()
+    {
+        Debug.Log("Player öldü!");
+
+        // Player hareket etmesin
+        controls.Player.Disable();
+
+        // Karakteri görünmez yap (ama objeyi hemen silme)
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+        foreach (Renderer r in renderers)
+        {
+            r.enabled = false;
+        }
+
+        // Game Over ekranını göster
+        if (gameOverUI != null)
+            gameOverUI.SetActive(true);
+    }
 
     private void Awake()
     {
@@ -59,6 +108,10 @@ public class PlayerControllerLogic : MonoBehaviour
         HandleMovement();
         HandleCamera();
         HandleAnimation();
+        if (isShooting && isAiming)
+        {
+            Shoot();
+        }
     }
 
     private void HandleMovement()
@@ -95,5 +148,23 @@ public class PlayerControllerLogic : MonoBehaviour
         animator.SetBool("IsJumping", isJumping);
         animator.SetBool("IsAiming", isAiming);
         animator.SetBool("IsShooting", isShooting);
+    }
+
+    void Shoot()
+    {
+        Ray ray = new Ray(shootOrigin.position, cameraTransform.forward);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, shootRange, enemyLayer))
+        {
+            Debug.Log("Vuruldu: " + hit.collider.name);
+
+            // NPC'ye hasar gönder
+            Npc_AI npc = hit.collider.GetComponent<Npc_AI>();
+            if (npc != null)
+            {
+                npc.TakeDamage(damage);
+            }
+        }
     }
 }
