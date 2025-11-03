@@ -34,24 +34,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "QuickTurnLeft",
-                    "type": "Button",
-                    "id": "548a7bc6-41e3-4957-b74c-db2c63c96038",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "QuickTurnRight",
-                    "type": "Button",
-                    "id": "9fa84a7c-dfac-436b-8ae7-7c496b300ca8",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Aim",
                     "type": "Button",
                     "id": "fb99a457-9ae8-41cb-9153-59da99b59810",
@@ -59,6 +41,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Look",
+                    "type": "Value",
+                    "id": "7b5143f7-4cff-43e3-9d31-8d545b5b26f2",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -163,39 +154,6 @@
                 },
                 {
                     "name": "",
-                    "id": "70cedf83-546b-4ce3-8749-43709eeb410f",
-                    "path": "<Keyboard>/a",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "QuickTurnLeft",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "600eea0b-e48c-4353-a15a-e9dea49384f4",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "QuickTurnRight",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "462bd796-3889-420b-9bab-6413edf0a7cb",
-                    "path": "<Keyboard>/d",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "QuickTurnRight",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "b5445650-a765-4901-8975-a4cbdae72c81",
                     "path": "",
                     "interactions": "",
@@ -213,6 +171,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Aim",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6dfe696b-14d6-4206-97ff-403889586c58",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Look",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a00ff6ff-8827-4cae-94a5-09c467128976",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Look",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

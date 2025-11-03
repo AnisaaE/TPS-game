@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Unity.Cinemachine; // Unity 6 için doğru namespace
+using Unity.Cinemachine;
 using UnityEngine.UI;
 
 public class PlayerControllerLogic : MonoBehaviour
@@ -8,6 +8,7 @@ public class PlayerControllerLogic : MonoBehaviour
     private Animator animator;
     private PlayerController controls;
     private Vector2 moveInput;
+    private Vector2 lookInput;
     private bool isJumping;
     private bool isAiming;
     private bool isShooting;
@@ -22,12 +23,21 @@ public class PlayerControllerLogic : MonoBehaviour
 
     [Header("Movement Settings")]
     public float speed = 5f;
-    public float rotationSmoothTime = 0.1f;
-    private float rotationSmoothVelocity;
+    public float rotationSmoothTime = 0.12f;
+
+    [Header("Mouse Look Settings")]
+    public float cameraSensitivityX = 250f;
+    public float cameraSensitivityY = 120f;
+    public float cameraPitchLimit = 80f;
+    public float sensitivityMultiplier = 0.8f;
 
     [Header("Shooting Settings")]
     public float shootRange = 100f;
     public int damage = 20;
+
+    private float yaw;
+    private float pitch;
+    private float smoothTurnVelocity;
 
     // Diğer bileşen referansı
     private PlayerHealth playerHealth;
@@ -35,12 +45,16 @@ public class PlayerControllerLogic : MonoBehaviour
     private void Awake()
     {
         animator = GetComponent<Animator>();
-        playerHealth = GetComponent<PlayerHealth>(); // PlayerHealth scriptine erişim
+        playerHealth = GetComponent<PlayerHealth>();
         controls = new PlayerController();
 
         // --- Hareket ---
         controls.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
         controls.Player.Move.canceled += ctx => moveInput = Vector2.zero;
+
+        // --- Mouse Look ---
+        controls.Player.Look.performed += ctx => lookInput = ctx.ReadValue<Vector2>();
+        controls.Player.Look.canceled += ctx => lookInput = Vector2.zero;
 
         // --- Zıplama ---
         controls.Player.Jump.performed += ctx => isJumping = true;
@@ -57,6 +71,10 @@ public class PlayerControllerLogic : MonoBehaviour
         // --- Sol tıkla ateş ---
         controls.Player.Shoot.performed += ctx => isShooting = true;
         controls.Player.Shoot.canceled += ctx => isShooting = false;
+
+        // Fare imlecini gizle ve kilitle
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     private void OnEnable() => controls.Player.Enable();
@@ -64,13 +82,32 @@ public class PlayerControllerLogic : MonoBehaviour
 
     private void Update()
     {
-        HandleMovement();
         HandleCamera();
+        HandleMovement();
         HandleAnimation();
 
         // Ateş işlemi
         if (isShooting && isAiming)
             Shoot();
+    }
+
+    private void HandleCamera()
+    {
+        // Mouse look - yaw ve pitch güncelleme
+        yaw += lookInput.x * cameraSensitivityX * Time.deltaTime * sensitivityMultiplier * 0.2f;
+        pitch -= lookInput.y * cameraSensitivityY * Time.deltaTime * sensitivityMultiplier * 0.2f;
+        pitch = Mathf.Clamp(pitch, -cameraPitchLimit, cameraPitchLimit);
+
+        // Ana kameraya dönüş uygula
+        if (cameraTransform != null)
+        {
+            cameraTransform.rotation = Quaternion.Euler(pitch, yaw, 0f);
+        }
+
+        // Kamera geçişleri
+        if (vCamNormal == null || vCamAim == null) return;
+        vCamNormal.Priority = isAiming ? 0 : 10;
+        vCamAim.Priority = isAiming ? 10 : 0;
     }
 
     private void HandleMovement()
@@ -79,10 +116,14 @@ public class PlayerControllerLogic : MonoBehaviour
 
         if (direction.magnitude >= 0.1f)
         {
+            // Kameranın yönüne göre hareket açısı
             float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cameraTransform.eulerAngles.y;
-            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref rotationSmoothVelocity, rotationSmoothTime);
-            transform.rotation = Quaternion.Euler(0f, angle, 0f);
 
+            // Yumuşak dönüş
+            float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref smoothTurnVelocity, rotationSmoothTime);
+            transform.rotation = Quaternion.Euler(0f, smoothAngle, 0f);
+
+            // Hareket vektörü
             Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
             transform.position += moveDir.normalized * speed * Time.deltaTime;
 
@@ -92,13 +133,6 @@ public class PlayerControllerLogic : MonoBehaviour
         {
             animator.SetFloat("Speed", 0f);
         }
-    }
-
-    private void HandleCamera()
-    {
-        if (vCamNormal == null || vCamAim == null) return;
-        vCamNormal.Priority = isAiming ? 0 : 10;
-        vCamAim.Priority = isAiming ? 10 : 0;
     }
 
     private void HandleAnimation()
@@ -117,7 +151,7 @@ public class PlayerControllerLogic : MonoBehaviour
         {
             Debug.Log("NPC vuruldu: " + hit.collider.name);
 
-            // NPC’ye hasar ver
+            // NPC'ye hasar ver
             Npc_AI npc = hit.collider.GetComponent<Npc_AI>();
             if (npc != null)
             {
@@ -131,5 +165,15 @@ public class PlayerControllerLogic : MonoBehaviour
     {
         if (playerHealth != null)
             playerHealth.TakeDamage(amount);
+    }
+
+    // Debug için - ESC ile fareyi serbest bırakma
+    private void OnApplicationFocus(bool hasFocus)
+    {
+        if (hasFocus)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
     }
 }

@@ -2539,7 +2539,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 400, y: 225}
+  m_AnchoredPosition: {x: 200, y: 150}
   m_SizeDelta: {x: 250, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &817931899
@@ -5042,7 +5042,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1192863207}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.030350197, y: -0.54082626, z: 0.019532336, w: 0.8403597}
+  m_LocalRotation: {x: 0.029874569, y: -0.56076205, z: 0.02025233, w: 0.82719004}
   m_LocalPosition: {x: 0.90122545, y: 1.48506, z: 5.1499357}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -9085,7 +9085,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
   maxHealth: 100
   healthBarFill: {fileID: 817931899}
-  heartIcon: {fileID: 0}
   smoothSpeed: 5
   shakeDuration: 0.3
   shakeMagnitude: 5
