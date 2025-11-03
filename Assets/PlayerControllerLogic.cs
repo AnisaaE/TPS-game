@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Unity.Cinemachine;   // Unity 6 için doğru namespace
-using UnityEngine.UI;      // UI objeleri için eklendi
+using Unity.Cinemachine; // Unity 6 için doğru namespace
+using UnityEngine.UI;
 
 public class PlayerControllerLogic : MonoBehaviour
 {
@@ -11,16 +11,14 @@ public class PlayerControllerLogic : MonoBehaviour
     private bool isJumping;
     private bool isAiming;
     private bool isShooting;
-    private bool IsDead;
-    public Image healthBar;
-    [Header("UI")]
-public GameObject gameOverUI;
 
     [Header("References")]
     public CinemachineCamera vCamNormal;   // Normal kamera (VCam_Normal)
     public CinemachineCamera vCamAim;      // Aim kamera (VCam_Aim)
-    public Transform cameraTransform;      // MainCamera (Camera.main)
-    public GameObject crosshairUI;         // 👈 Crosshair referansı (Canvas -> Crosshair)
+    public Transform cameraTransform;      // MainCamera
+    public GameObject crosshairUI;         // Crosshair objesi (Canvas içinde)
+    public Transform shootOrigin;          // Silahın ucu
+    public LayerMask enemyLayer;           // NPC layer
 
     [Header("Movement Settings")]
     public float speed = 5f;
@@ -30,72 +28,33 @@ public GameObject gameOverUI;
     [Header("Shooting Settings")]
     public float shootRange = 100f;
     public int damage = 20;
-    public LayerMask enemyLayer; // Sadece NPC’leri hedef almak için
-    public Transform shootOrigin; // Merminin çıkacağı yer (silahın ucu gibi)
 
-    [Header("Health")]
-    public int maxHealth = 100;
-    private int currentHealth;
-
-    private void Start()
-    {
-        currentHealth = maxHealth;
-    }
-
-    public void TakeDamage(int damage)
-    {
-        currentHealth -= damage;
-        Debug.Log("Player hasar aldı! Kalan can: " + currentHealth);
-        healthBar.fillAmount = (float)currentHealth / maxHealth;
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
-    }
-
-    void Die()
-    {
-        Debug.Log("Player öldü!");
-
-        // Player hareket etmesin
-        controls.Player.Disable();
-
-        // Karakteri görünmez yap (ama objeyi hemen silme)
-        Renderer[] renderers = GetComponentsInChildren<Renderer>();
-        foreach (Renderer r in renderers)
-        {
-            r.enabled = false;
-        }
-
-        // Game Over ekranını göster
-        if (gameOverUI != null)
-            gameOverUI.SetActive(true);
-    }
+    // Diğer bileşen referansı
+    private PlayerHealth playerHealth;
 
     private void Awake()
     {
         animator = GetComponent<Animator>();
+        playerHealth = GetComponent<PlayerHealth>(); // PlayerHealth scriptine erişim
         controls = new PlayerController();
 
-        // --- Input Tanımlamaları ---
+        // --- Hareket ---
         controls.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
         controls.Player.Move.canceled += ctx => moveInput = Vector2.zero;
 
+        // --- Zıplama ---
         controls.Player.Jump.performed += ctx => isJumping = true;
         controls.Player.Jump.canceled += ctx => isJumping = false;
 
-        // --- Sağ tık Aim Toggle ---
+        // --- Sağ tıkla aim ---
         controls.Player.Aim.performed += ctx =>
         {
             isAiming = !isAiming;
-            Debug.Log("Aiming toggled: " + isAiming);
-
-            // Crosshair sadece aim aktifken görünsün
             if (crosshairUI != null)
                 crosshairUI.SetActive(isAiming);
         };
 
-        // --- Ateş etme ---
+        // --- Sol tıkla ateş ---
         controls.Player.Shoot.performed += ctx => isShooting = true;
         controls.Player.Shoot.canceled += ctx => isShooting = false;
     }
@@ -108,10 +67,10 @@ public GameObject gameOverUI;
         HandleMovement();
         HandleCamera();
         HandleAnimation();
+
+        // Ateş işlemi
         if (isShooting && isAiming)
-        {
             Shoot();
-        }
     }
 
     private void HandleMovement()
@@ -138,7 +97,6 @@ public GameObject gameOverUI;
     private void HandleCamera()
     {
         if (vCamNormal == null || vCamAim == null) return;
-
         vCamNormal.Priority = isAiming ? 0 : 10;
         vCamAim.Priority = isAiming ? 10 : 0;
     }
@@ -150,21 +108,28 @@ public GameObject gameOverUI;
         animator.SetBool("IsShooting", isShooting);
     }
 
-    void Shoot()
+    private void Shoot()
     {
         Ray ray = new Ray(shootOrigin.position, cameraTransform.forward);
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, shootRange, enemyLayer))
         {
-            Debug.Log("Vuruldu: " + hit.collider.name);
+            Debug.Log("NPC vuruldu: " + hit.collider.name);
 
-            // NPC'ye hasar gönder
+            // NPC’ye hasar ver
             Npc_AI npc = hit.collider.GetComponent<Npc_AI>();
             if (npc != null)
             {
                 npc.TakeDamage(damage);
             }
         }
+    }
+
+    // NPC seni vurduğunda PlayerHealth üzerinden çağrılacak:
+    public void ReceiveDamage(int amount)
+    {
+        if (playerHealth != null)
+            playerHealth.TakeDamage(amount);
     }
 }

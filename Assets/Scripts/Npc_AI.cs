@@ -137,7 +137,7 @@ public class Npc_AI : MonoBehaviour
             Debug.Log("NPC ateş ediyor!");
 
             // Player'a hasar ver
-            player.GetComponent<PlayerControllerLogic>().TakeDamage(10); //bunu playercontrollerda eklemen gerekiyorrr!!!!!!!!!!!!
+            player.GetComponent<PlayerControllerLogic>().ReceiveDamage(2); //bunu playercontrollerda eklemen gerekiyorrr!!!!!!!!!!!!
 
             yield return new WaitForSeconds(attackRate);
         }
