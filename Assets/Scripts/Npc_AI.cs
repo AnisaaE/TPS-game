@@ -172,6 +172,9 @@ public class Npc_AI : MonoBehaviour
         isDead = true;
         agent.isStopped = true;
         Debug.Log("NPC öldü!");
+        animator.SetTrigger("Die");
+        // Hareketi durdur
+        GetComponent<Npc_AI>().enabled = false;
 
         // 2 saniye sonra sahneden kaldır
         Destroy(gameObject, 2f);

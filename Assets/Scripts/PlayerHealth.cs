@@ -13,6 +13,8 @@ public class PlayerHealth : MonoBehaviour
     [Header("UI References")]
     public Image healthBarFill;  // HealthBar_Fill objesini buraya sürük
     public float smoothSpeed = 5f;
+    public Image DamageEffect; // Canvas altýndaki DamageEffect objesindeki Image
+    public Image DamageEffect1;
 
     [Header("Shake Effect")]
     public float shakeDuration = 0.3f;
@@ -26,8 +28,11 @@ public class PlayerHealth : MonoBehaviour
     private bool isShaking = false;
     public NavMeshAgent agent;
     public Animator animator;
+    private bool Died=false;
+
     void Start()
     {
+        animator = GetComponent<Animator>();
         currentHealth = maxHealth;
         gameOverText.gameObject.SetActive(false);
         targetFill = 1f;
@@ -59,16 +64,37 @@ public class PlayerHealth : MonoBehaviour
             StartCoroutine(ShakeBar());
 
         Debug.Log("Player hasar aldý! Kalan can: " + currentHealth);
+        // Kan efekti kontrolü
+        if (DamageEffect != null)
+        {
+            if (currentHealth > 10)
+            {
+                StartCoroutine(ShowBloodEffect(0.5f)); // 0.5 sn göster
+            }
+            else
+            {
+                DamageEffect.gameObject.SetActive(true); // 10 canýn altýndaysa hep açýk
+            }
+        }
+        if (DamageEffect1 != null)
+        {
+            if (currentHealth > 10)
+            {
+                StartCoroutine(ShowBloodEffect(0.5f)); // 0.5 sn göster
+            }
+            else
+            {
+                DamageEffect1.gameObject.SetActive(true); // 10 canýn altýndaysa hep açýk
+            }
+        }
 
-        
+
         if (currentHealth <= 0 )
         {
-           
-            animator.SetTrigger("Die");
             // hareket, atýþ gibi diðer scriptleri kapat
             Die();
         }
-
+        
     }
 
     public void Heal(int amount)
@@ -101,11 +127,27 @@ public class PlayerHealth : MonoBehaviour
     void Die()
     {
         Debug.Log(" Player died!");
+
+        animator.SetTrigger("Die");
+
+        // Hareketi durdur
+        GetComponent<PlayerControllerLogic>().enabled = false;
         // Game Over UI aktif et
         gameOverText.gameObject.SetActive(true);
 
         agent.isStopped = true;
         Destroy(gameObject,3f);
     }
-    
+    private IEnumerator ShowBloodEffect(float duration)
+    {
+        DamageEffect.gameObject.SetActive(true);
+        yield return new WaitForSeconds(duration);
+        if (currentHealth > 10)
+            DamageEffect.gameObject.SetActive(false);
+        DamageEffect1.gameObject.SetActive(true);
+        yield return new WaitForSeconds(duration);
+        if (currentHealth > 10)
+            DamageEffect1.gameObject.SetActive(false);
+    }
+
 }
