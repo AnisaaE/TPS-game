@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.AI;
-
+using TMPro;
 public class PlayerHealth : MonoBehaviour
 {
     [Header("Health Settings")]
@@ -18,13 +18,18 @@ public class PlayerHealth : MonoBehaviour
     public float shakeDuration = 0.3f;
     public float shakeMagnitude = 5f;
 
+    [Header("UI")]
+    public TextMeshProUGUI gameOverText;
+
     private RectTransform barTransform;
     private Vector3 originalPos;
     private bool isShaking = false;
     public NavMeshAgent agent;
+    public Animator animator;
     void Start()
     {
         currentHealth = maxHealth;
+        gameOverText.gameObject.SetActive(false);
         targetFill = 1f;
 
         if (healthBarFill != null)
@@ -55,8 +60,15 @@ public class PlayerHealth : MonoBehaviour
 
         Debug.Log("Player hasar aldý! Kalan can: " + currentHealth);
 
-        if (currentHealth <= 0)
+        
+        if (currentHealth <= 0 )
+        {
+           
+            animator.SetTrigger("Die");
+            // hareket, atýþ gibi diðer scriptleri kapat
             Die();
+        }
+
     }
 
     public void Heal(int amount)
@@ -89,7 +101,9 @@ public class PlayerHealth : MonoBehaviour
     void Die()
     {
         Debug.Log(" Player died!");
-        
+        // Game Over UI aktif et
+        gameOverText.gameObject.SetActive(true);
+
         agent.isStopped = true;
         Destroy(gameObject,3f);
     }

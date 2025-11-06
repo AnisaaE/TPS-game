@@ -12,6 +12,8 @@ public class PlayerControllerLogic : MonoBehaviour
     private bool isJumping;
     private bool isAiming;
     private bool isShooting;
+    private Vector3 aimPoint;
+   
 
     [Header("References")]
     public CinemachineCamera vCamNormal;   // Normal kamera (VCam_Normal)
@@ -85,7 +87,7 @@ public class PlayerControllerLogic : MonoBehaviour
         HandleCamera();
         HandleMovement();
         HandleAnimation();
-
+     
         // Ateş işlemi
         if (isShooting && isAiming)
             Shoot();
@@ -143,34 +145,45 @@ public class PlayerControllerLogic : MonoBehaviour
     }
     private void Shoot()
     {
-        // 1️⃣ Първо пускаме Ray от камерата – точно през crosshair-а
-        Ray ray = new Ray(cameraTransform.position, cameraTransform.forward);
+        Debug.Log("Shoot fonksiyonu çalıştı.");
+
+        Ray ray = new Ray(shootOrigin.position, shootOrigin.forward);
         RaycastHit hit;
+
+        Debug.DrawRay(shootOrigin.position, shootOrigin.forward * shootRange, Color.red, 1f);
 
         if (Physics.Raycast(ray, out hit, shootRange, enemyLayer))
         {
-            // 2️⃣ Запомняме точката, където камерата гледа
-            Vector3 targetPoint = hit.point;
+            Debug.Log("NPC vuruldu: " + hit.collider.name);
 
-            // 3️⃣ Сега изчисляваме посока от дулото на оръжието до тази точка
-            Vector3 shootDir = (targetPoint - shootOrigin.position).normalized;
-
-            // 4️⃣ Реално изстрелваме втори Ray от дулото
-            if (Physics.Raycast(shootOrigin.position, shootDir, out hit, shootRange, enemyLayer))
+            Npc_AI npc = hit.collider.GetComponentInParent<Npc_AI>();
+            if (npc != null)
             {
-                Debug.Log("NPC vuruldu: " + hit.collider.name);
-
-                Npc_AI npc = hit.collider.GetComponent<Npc_AI>();
-                if (npc != null)
-                {
-                    npc.TakeDamage(damage);
-                }
+                npc.TakeDamage(damage);
+                Debug.Log("Damage uygulandı.");
             }
-            // Debug line - само в Scene View
-            Debug.DrawRay(shootOrigin.position, (hit.point - shootOrigin.position), Color.red, 1f);
-
         }
+        else
+        {
+            Debug.Log("Hiçbir şey vurulmadı.");
+        }
+    }
+    private void AlignShootOriginWithCamera()
+    {
+        if (shootOrigin == null || cameraTransform == null) return;
 
+        // Kamera merkezinden ray oluştur
+        Ray ray = new Ray(cameraTransform.position, cameraTransform.forward);
+
+        // Hedef noktayı bul (duvara çarparsa o nokta, boşsa ileriye doğru)
+        if (Physics.Raycast(ray, out RaycastHit hit, shootRange))
+            aimPoint = hit.point;
+        else
+            aimPoint = ray.origin + ray.direction * shootRange;
+
+        // Silahın ucunu bu noktaya döndür
+        Vector3 aimDir = (aimPoint - shootOrigin.position).normalized;
+        shootOrigin.forward = Vector3.Lerp(shootOrigin.forward, aimDir, Time.deltaTime * 20f);
     }
 
 
@@ -191,4 +204,10 @@ public class PlayerControllerLogic : MonoBehaviour
             Cursor.visible = false;
         }
     }
+    private void LateUpdate()
+    {
+        AlignShootOriginWithCamera();
+    }
+
+    
 }
