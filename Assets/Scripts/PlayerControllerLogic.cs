@@ -13,6 +13,8 @@ public class PlayerControllerLogic : MonoBehaviour
     private bool isAiming;
     private bool isShooting;
 
+    
+
     [Header("References")]
     public CinemachineCamera vCamNormal;   // Normal kamera (VCam_Normal)
     public CinemachineCamera vCamAim;      // Aim kamera (VCam_Aim)
@@ -20,6 +22,7 @@ public class PlayerControllerLogic : MonoBehaviour
     public GameObject crosshairUI;         // Crosshair objesi (Canvas içinde)
     public Transform shootOrigin;          // Silahın ucu
     public LayerMask enemyLayer;           // NPC layer
+    private Transform aimCamTransform;
 
     [Header("Movement Settings")]
     public float speed = 5f;
@@ -47,6 +50,7 @@ public class PlayerControllerLogic : MonoBehaviour
         animator = GetComponent<Animator>();
         playerHealth = GetComponent<PlayerHealth>();
         controls = new PlayerController();
+        aimCamTransform = vCamAim.transform;
 
         // --- Hareket ---
         controls.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
@@ -144,23 +148,36 @@ public class PlayerControllerLogic : MonoBehaviour
 
     private void Shoot()
     {
-        Ray ray = new Ray(shootOrigin.position, cameraTransform.forward);
+        Debug.Log("Shoot fonksiyonu çalıştı.");
+        Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
         RaycastHit hit;
+
+        Debug.DrawRay(ray.origin, ray.direction * shootRange, Color.red, 5f);
+        //Debug.DrawRay(ray.origin, ray.direction * 200f, Color.red, 10f);
 
         if (Physics.Raycast(ray, out hit, shootRange, enemyLayer))
         {
             Debug.Log("NPC vuruldu: " + hit.collider.name);
 
-            // NPC'ye hasar ver
-            Npc_AI npc = hit.collider.GetComponent<Npc_AI>();
+            Npc_AI npc = hit.collider.GetComponentInParent<Npc_AI>();
             if (npc != null)
             {
                 npc.TakeDamage(damage);
+                Debug.Log("Damage uygulandı.");
             }
+            else
+            {
+                Debug.LogWarning("Çarpılan objede Npc_AI scripti bulunamadı!");
+            }
+        }
+        else
+        {
+            Debug.Log("Hiçbir şey vurulmadı.");
         }
     }
 
-    // NPC seni vurduğunda PlayerHealth üzerinden çağrılacak:
+
+
     public void ReceiveDamage(int amount)
     {
         if (playerHealth != null)

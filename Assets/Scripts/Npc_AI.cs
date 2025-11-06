@@ -78,6 +78,7 @@ public class Npc_AI : MonoBehaviour
             Die();
 
         }
+
     }
 
     void Patrol()
