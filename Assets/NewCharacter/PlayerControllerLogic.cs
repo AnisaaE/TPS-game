@@ -94,15 +94,15 @@ public class PlayerControllerLogic : MonoBehaviour
     private void HandleCamera()
     {
         // Mouse look - yaw ve pitch güncelleme
-        yaw += lookInput.x * cameraSensitivityX * Time.deltaTime * sensitivityMultiplier * 0.2f;
-        pitch -= lookInput.y * cameraSensitivityY * Time.deltaTime * sensitivityMultiplier * 0.2f;
-        pitch = Mathf.Clamp(pitch, -cameraPitchLimit, cameraPitchLimit);
+      //  yaw += lookInput.x * cameraSensitivityX * Time.deltaTime * sensitivityMultiplier * 0.2f;
+      //  pitch -= lookInput.y * cameraSensitivityY * Time.deltaTime * sensitivityMultiplier * 0.2f;
+      //  pitch = Mathf.Clamp(pitch, -cameraPitchLimit, cameraPitchLimit);
 
         // Ana kameraya dönüş uygula
-        if (cameraTransform != null)
-        {
-            cameraTransform.rotation = Quaternion.Euler(pitch, yaw, 0f);
-        }
+       // if (cameraTransform != null)
+       // {
+        //    cameraTransform.rotation = Quaternion.Euler(pitch, yaw, 0f);
+       // }
 
         // Kamera geçişleri
         if (vCamNormal == null || vCamAim == null) return;
@@ -141,24 +141,39 @@ public class PlayerControllerLogic : MonoBehaviour
         animator.SetBool("IsAiming", isAiming);
         animator.SetBool("IsShooting", isShooting);
     }
-
     private void Shoot()
     {
-        Ray ray = new Ray(shootOrigin.position, cameraTransform.forward);
+        // 1️⃣ Първо пускаме Ray от камерата – точно през crosshair-а
+        Ray ray = new Ray(cameraTransform.position, cameraTransform.forward);
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, shootRange, enemyLayer))
         {
-            Debug.Log("NPC vuruldu: " + hit.collider.name);
+            // 2️⃣ Запомняме точката, където камерата гледа
+            Vector3 targetPoint = hit.point;
 
-            // NPC'ye hasar ver
-            Npc_AI npc = hit.collider.GetComponent<Npc_AI>();
-            if (npc != null)
+            // 3️⃣ Сега изчисляваме посока от дулото на оръжието до тази точка
+            Vector3 shootDir = (targetPoint - shootOrigin.position).normalized;
+
+            // 4️⃣ Реално изстрелваме втори Ray от дулото
+            if (Physics.Raycast(shootOrigin.position, shootDir, out hit, shootRange, enemyLayer))
             {
-                npc.TakeDamage(damage);
+                Debug.Log("NPC vuruldu: " + hit.collider.name);
+
+                Npc_AI npc = hit.collider.GetComponent<Npc_AI>();
+                if (npc != null)
+                {
+                    npc.TakeDamage(damage);
+                }
             }
+            // Debug line - само в Scene View
+            Debug.DrawRay(shootOrigin.position, (hit.point - shootOrigin.position), Color.red, 1f);
+
         }
+
     }
+
+
 
     // NPC seni vurduğunda PlayerHealth üzerinden çağrılacak:
     public void ReceiveDamage(int amount)
