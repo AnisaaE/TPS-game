@@ -140,13 +140,13 @@ public class PlayerHealth : MonoBehaviour
     private IEnumerator ShowBloodEffect(float duration)
     {
         DamageEffect.gameObject.SetActive(true);
-        yield return new WaitForSeconds(duration);
-        if (currentHealth > 10)
-            DamageEffect.gameObject.SetActive(false);
         DamageEffect1.gameObject.SetActive(true);
         yield return new WaitForSeconds(duration);
         if (currentHealth > 10)
+        {
+            DamageEffect.gameObject.SetActive(false);
             DamageEffect1.gameObject.SetActive(false);
+        }
     }
 
 }

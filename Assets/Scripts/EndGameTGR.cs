@@ -9,6 +9,7 @@ public class EndGameTGR : MonoBehaviour
     public float kissDelay = 1f;
 
     private bool hasEnded = false;
+    public AudioSource danceMusic;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -42,6 +43,9 @@ public class EndGameTGR : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         playerAnimator.SetTrigger("Dance");
         rumyAnimator.SetTrigger("Dance");
+        // Dans mьziрini зal
+        if (danceMusic != null && !danceMusic.isPlaying)
+            danceMusic.Play();
 
         // Изчакваме анимацията
         yield return new WaitForSeconds(kissDelay);
