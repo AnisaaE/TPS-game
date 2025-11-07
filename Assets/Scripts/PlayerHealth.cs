@@ -11,9 +11,9 @@ public class PlayerHealth : MonoBehaviour
     private float targetFill;
 
     [Header("UI References")]
-    public Image healthBarFill;  // HealthBar_Fill Image dosyasý
+    public Image healthBarFill;  
     public float smoothSpeed = 5f;
-    public Image DamageEffect;   // Canvas altýndaki DamageEffect objesindeki Image
+    public Image DamageEffect;   
     public Image DamageEffect1;
 
     [Header("Shake Effect")]
@@ -45,9 +45,8 @@ public class PlayerHealth : MonoBehaviour
 
     void Update()
     {
-        // Bar doluluðunu yumuþak animasyonla azalt
+        
         healthBarFill.fillAmount = Mathf.Lerp(healthBarFill.fillAmount, targetFill, Time.deltaTime * smoothSpeed);
-
 
     }
 
@@ -63,20 +62,19 @@ public class PlayerHealth : MonoBehaviour
             StartCoroutine(ShakeBar());
 
         Debug.Log("Player hasar aldý! Kalan can: " + currentHealth);
-        // Kan efekti kontrolü
+        
         if (DamageEffect&& DamageEffect1 != null)
         {
             if (currentHealth > 10)
             {
-                StartCoroutine(ShowBloodEffect(0.5f)); // 0.5 sn göster
+                StartCoroutine(ShowBloodEffect(0.5f)); 
             }
             else
             {
-                DamageEffect.gameObject.SetActive(true); // 10 canýn altýndaysa hep açýk
+                DamageEffect.gameObject.SetActive(true); 
                 DamageEffect1.gameObject.SetActive(true);
             }
         }
-
 
         if (currentHealth <= 0 )
         {
@@ -116,12 +114,9 @@ public class PlayerHealth : MonoBehaviour
     void Die()
     {
         Debug.Log(" Player died!");
-
         animator.SetTrigger("Die");
 
-        // Hareketi durdur
         GetComponent<PlayerControllerLogic>().enabled = false;
-        // Game Over UI aktif et
         gameOverText.gameObject.SetActive(true);
 
         agent.isStopped = true;
@@ -138,5 +133,4 @@ public class PlayerHealth : MonoBehaviour
             DamageEffect1.gameObject.SetActive(false);
         }
     }
-
 }

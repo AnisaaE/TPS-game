@@ -14,7 +14,7 @@ public class Npc_AI : MonoBehaviour
     public float attackDistance = 3f;
     public float patrolRadius = 15f;
     public float patrolWaitTime = 2f;
-    public float attackRate = 1f;   //1 saniye arayla ateş et
+    public float attackRate = 1f;   
 
     [Header("Animasyon")]
     public Animator animator;
@@ -25,8 +25,8 @@ public class Npc_AI : MonoBehaviour
 
     private Vector3 patrolTarget;
     private bool isPatrolling = true;
-    private bool isAttacking = false;  // Ateş etme durumunu kontrol eder
-    private bool isDead = false;       // Npc öldü mü kontrolü
+    private bool isAttacking = false;  
+    private bool isDead = false;       
 
     void Start()
     {
@@ -36,7 +36,7 @@ public class Npc_AI : MonoBehaviour
     }
     void Update()
     {
-        if (isDead) return;   //  Öldüyse hiçbir şey yapma
+        if (isDead) return;   
 
         float distance = Vector3.Distance(transform.position, player.position);
         Vector3 direction = (player.position - transform.position).normalized;
@@ -81,7 +81,6 @@ public class Npc_AI : MonoBehaviour
         if(currentHealth <= 0)
         {
             Die();
-
         }
     }
 
@@ -129,7 +128,6 @@ public class Npc_AI : MonoBehaviour
         {
             animator.SetBool("isRunning", false);
             animator.SetBool("isWalking", false);
-            // Bu kısım sayesinde koşudan, yürüyüşten veya idleden geçiş yapabilir
         }
     }
     IEnumerator AttackLoop()
@@ -140,11 +138,8 @@ public class Npc_AI : MonoBehaviour
         while (Vector3.Distance(transform.position, player.position) <= attackDistance)
         {
             Debug.Log("NPC ateş ediyor!");
-
-            // Player'a hasar ver
             player.GetComponent<PlayerControllerLogic>().ReceiveDamage(2); 
 
-            // Gunshot sesi çal
             if (audioSource != null && gunshotSound != null)
             {
                 audioSource.PlayOneShot(gunshotSound);
@@ -152,10 +147,10 @@ public class Npc_AI : MonoBehaviour
             yield return new WaitForSeconds(attackRate);
         }
 
-        // Oyuncu uzaklaştıysa hemen kovalamaya başla
+        
         isAttacking = false;
         animator.SetBool("isShooting", false);
-        ChasePlayer();   // anında koşmaya geçer
+        ChasePlayer();   
     }
     IEnumerator PatrolRoutine()
     {
@@ -183,10 +178,7 @@ public class Npc_AI : MonoBehaviour
         agent.isStopped = true;
         Debug.Log("NPC öldü!");
         animator.SetTrigger("Die");
-        // Hareketi durdur
         GetComponent<Npc_AI>().enabled = false;
-
-        // 2 saniye sonra sahneden kaldır
         Destroy(gameObject, 3f);
     }
 }

@@ -16,12 +16,12 @@ public class PlayerControllerLogic : MonoBehaviour
    
 
     [Header("References")]
-    public CinemachineCamera vCamNormal;   // Normal kamera (VCam_Normal)
-    public CinemachineCamera vCamAim;      // Aim kamera (VCam_Aim)
-    public Transform cameraTransform;      // MainCamera
-    public GameObject crosshairUI;         // Crosshair objesi (Canvas içinde)
-    public Transform shootOrigin;          // Silahın ucu
-    public LayerMask enemyLayer;           // NPC layer
+    public CinemachineCamera vCamNormal;   
+    public CinemachineCamera vCamAim;      
+    public Transform cameraTransform;      
+    public GameObject crosshairUI;         
+    public Transform shootOrigin;         
+    public LayerMask enemyLayer;           
 
     [Header("Movement Settings")]
     public float speed = 5f;
@@ -38,11 +38,11 @@ public class PlayerControllerLogic : MonoBehaviour
     public int damage = 20;
 
     [Header("Audio")]
-    public AudioSource audioSource;        // AudioSource referansı
-    public AudioClip footstepSound;        // Koşu sesi
-    public AudioClip gunshotSound;         // Silah sesi
+    public AudioSource audioSource;        
+    public AudioClip footstepSound;       
+    public AudioClip gunshotSound;         
 
-    public float footstepInterval = 0.4f;  // Adımlar arası süre
+    public float footstepInterval = 0.4f;  
 
 
     private float yaw;
@@ -57,19 +57,15 @@ public class PlayerControllerLogic : MonoBehaviour
         playerHealth = GetComponent<PlayerHealth>();
         controls = new PlayerController();
 
-        // --- Hareket ---
         controls.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
         controls.Player.Move.canceled += ctx => moveInput = Vector2.zero;
 
-        // --- Mouse Look ---
         controls.Player.Look.performed += ctx => lookInput = ctx.ReadValue<Vector2>();
         controls.Player.Look.canceled += ctx => lookInput = Vector2.zero;
 
-        // --- Zıplama ---
         controls.Player.Jump.performed += ctx => isJumping = true;
         controls.Player.Jump.canceled += ctx => isJumping = false;
 
-        // --- Sağ tıkla aim ---
         controls.Player.Aim.performed += ctx =>
         {
             isAiming = !isAiming;
@@ -77,11 +73,9 @@ public class PlayerControllerLogic : MonoBehaviour
                 crosshairUI.SetActive(isAiming);
         };
 
-        // --- Sol tıkla ateş ---
         controls.Player.Shoot.performed += ctx => isShooting = true;
         controls.Player.Shoot.canceled += ctx => isShooting = false;
 
-        // Fare imlecini gizle ve kilitle
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -95,25 +89,12 @@ public class PlayerControllerLogic : MonoBehaviour
         HandleMovement();
         HandleAnimation();
      
-        // Ateş işlemi
         if (isShooting && isAiming)
             Shoot();
     }
 
     private void HandleCamera()
     {
-        // Mouse look - yaw ve pitch güncelleme
-      //  yaw += lookInput.x * cameraSensitivityX * Time.deltaTime * sensitivityMultiplier * 0.2f;
-      //  pitch -= lookInput.y * cameraSensitivityY * Time.deltaTime * sensitivityMultiplier * 0.2f;
-      //  pitch = Mathf.Clamp(pitch, -cameraPitchLimit, cameraPitchLimit);
-
-        // Ana kameraya dönüş uygula
-       // if (cameraTransform != null)
-       // {
-        //    cameraTransform.rotation = Quaternion.Euler(pitch, yaw, 0f);
-       // }
-
-        // Kamera geçişleri
         if (vCamNormal == null || vCamAim == null) return;
         vCamNormal.Priority = isAiming ? 0 : 10;
         vCamAim.Priority = isAiming ? 10 : 0;
@@ -125,24 +106,19 @@ public class PlayerControllerLogic : MonoBehaviour
 
         if (direction.magnitude >= 0.1f)
         {
-            // Kameranın yönüne göre hareket açısı
             float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cameraTransform.eulerAngles.y;
 
-            // Yumuşak dönüş
             float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref smoothTurnVelocity, rotationSmoothTime);
             transform.rotation = Quaternion.Euler(0f, smoothAngle, 0f);
 
-            // Hareket vektörü
             Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
             transform.position += moveDir.normalized * speed * Time.deltaTime;
-
             animator.SetFloat("Speed", 1f);
 
-            // --- Footstep sesi ---
             if (!audioSource.isPlaying && footstepSound != null)
             {
                 audioSource.clip = footstepSound;
-                audioSource.loop = true;  // sürekli çalsın
+                audioSource.loop = true;  
                 audioSource.Play();
             }
         }
@@ -150,7 +126,7 @@ public class PlayerControllerLogic : MonoBehaviour
         {
             animator.SetFloat("Speed", 0f);
             if (audioSource.isPlaying)
-                audioSource.Stop();  // Durunca sesi kes
+                audioSource.Stop();  
         }
     }
 
@@ -191,29 +167,28 @@ public class PlayerControllerLogic : MonoBehaviour
     {
         if (shootOrigin == null || cameraTransform == null) return;
 
-        // Kamera merkezinden ray oluştur
         Ray ray = new Ray(cameraTransform.position, cameraTransform.forward);
-
-        // Hedef noktayı bul (duvara çarparsa o nokta, boşsa ileriye doğru)
         if (Physics.Raycast(ray, out RaycastHit hit, shootRange))
+        {
             aimPoint = hit.point;
+        }
+            
         else
+        {
             aimPoint = ray.origin + ray.direction * shootRange;
 
-        // Silahın ucunu bu noktaya döndür
+        }
+
         Vector3 aimDir = (aimPoint - shootOrigin.position).normalized;
         shootOrigin.forward = Vector3.Lerp(shootOrigin.forward, aimDir, Time.deltaTime * 20f);
     }
 
-
-    // NPC player vurduğunda PlayerHealth üzerinden çağrılacak:
     public void ReceiveDamage(int amount)
     {
         if (playerHealth != null)
             playerHealth.TakeDamage(amount);
     }
 
-    // Debug için - ESC ile fareyi serbest bırakma
     private void OnApplicationFocus(bool hasFocus)
     {
         if (hasFocus)
