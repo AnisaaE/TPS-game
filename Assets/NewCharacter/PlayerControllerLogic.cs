@@ -37,6 +37,14 @@ public class PlayerControllerLogic : MonoBehaviour
     public float shootRange = 100f;
     public int damage = 20;
 
+    [Header("Audio")]
+    public AudioSource audioSource;        // AudioSource referansı
+    public AudioClip footstepSound;        // Koşu sesi
+    public AudioClip gunshotSound;         // Silah sesi
+
+    public float footstepInterval = 0.4f;  // Adımlar arası süre
+
+
     private float yaw;
     private float pitch;
     private float smoothTurnVelocity;
@@ -130,10 +138,20 @@ public class PlayerControllerLogic : MonoBehaviour
             transform.position += moveDir.normalized * speed * Time.deltaTime;
 
             animator.SetFloat("Speed", 1f);
+
+            // --- Footstep sesi ---
+            if (!audioSource.isPlaying && footstepSound != null)
+            {
+                audioSource.clip = footstepSound;
+                audioSource.loop = true;  // sürekli çalsın
+                audioSource.Play();
+            }
         }
         else
         {
             animator.SetFloat("Speed", 0f);
+            if (audioSource.isPlaying)
+                audioSource.Stop();  // Durunca sesi kes
         }
     }
 
@@ -151,6 +169,8 @@ public class PlayerControllerLogic : MonoBehaviour
         RaycastHit hit;
 
         Debug.DrawRay(shootOrigin.position, shootOrigin.forward * shootRange, Color.red, 1f);
+        if (gunshotSound != null && audioSource != null)
+            audioSource.PlayOneShot(gunshotSound);
 
         if (Physics.Raycast(ray, out hit, shootRange, enemyLayer))
         {

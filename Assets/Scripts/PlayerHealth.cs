@@ -28,7 +28,6 @@ public class PlayerHealth : MonoBehaviour
     private bool isShaking = false;
     public NavMeshAgent agent;
     public Animator animator;
-    private bool Died=false;
 
     void Start()
     {
