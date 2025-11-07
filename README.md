@@ -21,6 +21,8 @@ Görev, ajan çocuğa ulaştığında kısa bir bitiş animasyonu sekansı ile s
 
 Proje, anlaşılabilirlik ve ölçeklenebilirlik esas alınarak yapılandırılmıştır:
 
+![Proje Akış Şeması](https://github.com/AnisaaE/TPS-game/blob/main/Assets/Sema1.png?raw=true)
+
 Assets/
 │
 ├── Scripts/
