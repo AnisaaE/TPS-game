@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Unity.Cinemachine; // Unity 6 için doğru namespace
+using Unity.Cinemachine;
 using UnityEngine.UI;
 
 public class PlayerControllerLogic : MonoBehaviour
@@ -8,45 +8,64 @@ public class PlayerControllerLogic : MonoBehaviour
     private Animator animator;
     private PlayerController controls;
     private Vector2 moveInput;
+    private Vector2 lookInput;
     private bool isJumping;
     private bool isAiming;
     private bool isShooting;
+    private Vector3 aimPoint;
+   
 
     [Header("References")]
-    public CinemachineCamera vCamNormal;   // Normal kamera (VCam_Normal)
-    public CinemachineCamera vCamAim;      // Aim kamera (VCam_Aim)
-    public Transform cameraTransform;      // MainCamera
-    public GameObject crosshairUI;         // Crosshair objesi (Canvas içinde)
-    public Transform shootOrigin;          // Silahın ucu
-    public LayerMask enemyLayer;           // NPC layer
+    public CinemachineCamera vCamNormal;   
+    public CinemachineCamera vCamAim;      
+    public Transform cameraTransform;      
+    public GameObject crosshairUI;         
+    public Transform shootOrigin;         
+    public LayerMask enemyLayer;           
 
     [Header("Movement Settings")]
     public float speed = 5f;
-    public float rotationSmoothTime = 0.1f;
-    private float rotationSmoothVelocity;
+    public float rotationSmoothTime = 0.12f;
+
+    [Header("Mouse Look Settings")]
+    public float cameraSensitivityX = 250f;
+    public float cameraSensitivityY = 120f;
+    public float cameraPitchLimit = 80f;
+    public float sensitivityMultiplier = 0.8f;
 
     [Header("Shooting Settings")]
     public float shootRange = 100f;
     public int damage = 20;
 
-    // Diğer bileşen referansı
+    [Header("Audio")]
+    public AudioSource audioSource;        
+    public AudioClip footstepSound;       
+    public AudioClip gunshotSound;         
+
+    public float footstepInterval = 0.4f;  
+
+
+    private float yaw;
+    private float pitch;
+    private float smoothTurnVelocity;
+
     private PlayerHealth playerHealth;
 
     private void Awake()
     {
         animator = GetComponent<Animator>();
-        playerHealth = GetComponent<PlayerHealth>(); // PlayerHealth scriptine erişim
+        playerHealth = GetComponent<PlayerHealth>();
         controls = new PlayerController();
 
-        // --- Hareket ---
         controls.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
         controls.Player.Move.canceled += ctx => moveInput = Vector2.zero;
 
-        // --- Zıplama ---
+        controls.Player.Look.performed += ctx => lookInput = ctx.ReadValue<Vector2>();
+        controls.Player.Look.canceled += ctx => lookInput = Vector2.zero;
+
         controls.Player.Jump.performed += ctx => isJumping = true;
         controls.Player.Jump.canceled += ctx => isJumping = false;
 
-        // --- Sağ tıkla aim ---
         controls.Player.Aim.performed += ctx =>
         {
             isAiming = !isAiming;
@@ -54,9 +73,11 @@ public class PlayerControllerLogic : MonoBehaviour
                 crosshairUI.SetActive(isAiming);
         };
 
-        // --- Sol tıkla ateş ---
         controls.Player.Shoot.performed += ctx => isShooting = true;
         controls.Player.Shoot.canceled += ctx => isShooting = false;
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     private void OnEnable() => controls.Player.Enable();
@@ -64,34 +85,12 @@ public class PlayerControllerLogic : MonoBehaviour
 
     private void Update()
     {
-        HandleMovement();
         HandleCamera();
+        HandleMovement();
         HandleAnimation();
-
-        // Ateş işlemi
+     
         if (isShooting && isAiming)
             Shoot();
-    }
-
-    private void HandleMovement()
-    {
-        Vector3 direction = new Vector3(moveInput.x, 0f, moveInput.y).normalized;
-
-        if (direction.magnitude >= 0.1f)
-        {
-            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cameraTransform.eulerAngles.y;
-            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref rotationSmoothVelocity, rotationSmoothTime);
-            transform.rotation = Quaternion.Euler(0f, angle, 0f);
-
-            Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-            transform.position += moveDir.normalized * speed * Time.deltaTime;
-
-            animator.SetFloat("Speed", 1f);
-        }
-        else
-        {
-            animator.SetFloat("Speed", 0f);
-        }
     }
 
     private void HandleCamera()
@@ -101,35 +100,113 @@ public class PlayerControllerLogic : MonoBehaviour
         vCamAim.Priority = isAiming ? 10 : 0;
     }
 
+    private void HandleMovement()
+    {
+        Vector3 direction = new Vector3(moveInput.x, 0f, moveInput.y).normalized;
+
+        if (direction.magnitude >= 0.1f)
+        {
+            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cameraTransform.eulerAngles.y;
+
+            float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref smoothTurnVelocity, rotationSmoothTime);
+            transform.rotation = Quaternion.Euler(0f, smoothAngle, 0f);
+
+            Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+            transform.position += moveDir.normalized * speed * Time.deltaTime;
+            animator.SetFloat("Speed", 1f);
+
+            if (!audioSource.isPlaying && footstepSound != null)
+            {
+                audioSource.clip = footstepSound;
+                audioSource.loop = true;  
+                audioSource.Play();
+            }
+        }
+        else
+        {
+            animator.SetFloat("Speed", 0f);
+            if (audioSource.isPlaying)
+                audioSource.Stop();  
+        }
+    }
+
     private void HandleAnimation()
     {
         animator.SetBool("IsJumping", isJumping);
         animator.SetBool("IsAiming", isAiming);
         animator.SetBool("IsShooting", isShooting);
     }
-
     private void Shoot()
     {
-        Ray ray = new Ray(shootOrigin.position, cameraTransform.forward);
+        Debug.Log("Shoot fonksiyonu çalıştı.");
+
+        Ray ray = new Ray(shootOrigin.position, shootOrigin.forward);
         RaycastHit hit;
+
+        Debug.DrawRay(shootOrigin.position, shootOrigin.forward * shootRange, Color.red, 1f);
+        if (gunshotSound != null && audioSource != null)
+            audioSource.PlayOneShot(gunshotSound);
 
         if (Physics.Raycast(ray, out hit, shootRange, enemyLayer))
         {
             Debug.Log("NPC vuruldu: " + hit.collider.name);
 
-            // NPC’ye hasar ver
-            Npc_AI npc = hit.collider.GetComponent<Npc_AI>();
+            Npc_AI npc = hit.collider.GetComponentInParent<Npc_AI>();
             if (npc != null)
             {
                 npc.TakeDamage(damage);
+                Debug.Log("Damage uygulandı.");
             }
         }
+        else
+        {
+            Debug.Log("Hiçbir şey vurulmadı.");
+        }
+    }
+    private void AlignShootOriginWithCamera()
+    {
+        if (shootOrigin == null || cameraTransform == null) return;
+
+        Ray ray = new Ray(cameraTransform.position, cameraTransform.forward);
+        if (Physics.Raycast(ray, out RaycastHit hit, shootRange))
+        {
+            aimPoint = hit.point;
+        }
+            
+        else
+        {
+            aimPoint = ray.origin + ray.direction * shootRange;
+
+        }
+
+        Vector3 aimDir = (aimPoint - shootOrigin.position).normalized;
+        shootOrigin.forward = Vector3.Lerp(shootOrigin.forward, aimDir, Time.deltaTime * 20f);
     }
 
-    // NPC seni vurduğunda PlayerHealth üzerinden çağrılacak:
     public void ReceiveDamage(int amount)
     {
         if (playerHealth != null)
             playerHealth.TakeDamage(amount);
     }
+
+    private void OnApplicationFocus(bool hasFocus)
+    {
+        if (hasFocus)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+    }
+    private void LateUpdate()
+    {
+        AlignShootOriginWithCamera();
+    }
+    public void StopAllAudio()
+    {
+        if (audioSource != null && audioSource.isPlaying)
+        {
+            audioSource.Stop();
+        }
+    }
+
 }

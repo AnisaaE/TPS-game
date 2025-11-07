@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.AI;
-
+using TMPro;
 public class PlayerHealth : MonoBehaviour
 {
     [Header("Health Settings")]
@@ -11,20 +11,29 @@ public class PlayerHealth : MonoBehaviour
     private float targetFill;
 
     [Header("UI References")]
-    public Image healthBarFill;  // HealthBar_Fill objesini buraya sürük
+    public Image healthBarFill;  
     public float smoothSpeed = 5f;
+    public Image DamageEffect;   
+    public Image DamageEffect1;
 
     [Header("Shake Effect")]
     public float shakeDuration = 0.3f;
     public float shakeMagnitude = 5f;
 
+    [Header("UI")]
+    public TextMeshProUGUI gameOverText;
+
     private RectTransform barTransform;
     private Vector3 originalPos;
     private bool isShaking = false;
     public NavMeshAgent agent;
+    public Animator animator;
+
     void Start()
     {
+        animator = GetComponent<Animator>();
         currentHealth = maxHealth;
+        gameOverText.gameObject.SetActive(false);
         targetFill = 1f;
 
         if (healthBarFill != null)
@@ -36,10 +45,9 @@ public class PlayerHealth : MonoBehaviour
 
     void Update()
     {
-        // Bar doluluðunu yumuþak animasyonla azalt
+        
         healthBarFill.fillAmount = Mathf.Lerp(healthBarFill.fillAmount, targetFill, Time.deltaTime * smoothSpeed);
 
-        
     }
 
     public void TakeDamage(int damage)
@@ -54,9 +62,26 @@ public class PlayerHealth : MonoBehaviour
             StartCoroutine(ShakeBar());
 
         Debug.Log("Player hasar aldý! Kalan can: " + currentHealth);
+        
+        if (DamageEffect&& DamageEffect1 != null)
+        {
+            if (currentHealth > 10)
+            {
+                StartCoroutine(ShowBloodEffect(0.5f)); 
+            }
+            else
+            {
+                DamageEffect.gameObject.SetActive(true); 
+                DamageEffect1.gameObject.SetActive(true);
+            }
+        }
 
-        if (currentHealth <= 0)
+        if (currentHealth <= 0 )
+        {
+
             Die();
+        }
+        
     }
 
     public void Heal(int amount)
@@ -89,9 +114,23 @@ public class PlayerHealth : MonoBehaviour
     void Die()
     {
         Debug.Log(" Player died!");
-        
+        animator.SetTrigger("Die");
+
+        GetComponent<PlayerControllerLogic>().enabled = false;
+        gameOverText.gameObject.SetActive(true);
+
         agent.isStopped = true;
         Destroy(gameObject,3f);
     }
-    
+    private IEnumerator ShowBloodEffect(float duration)
+    {
+        DamageEffect.gameObject.SetActive(true);
+        DamageEffect1.gameObject.SetActive(true);
+        yield return new WaitForSeconds(duration);
+        if (currentHealth > 10)
+        {
+            DamageEffect.gameObject.SetActive(false);
+            DamageEffect1.gameObject.SetActive(false);
+        }
+    }
 }

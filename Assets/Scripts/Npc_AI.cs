@@ -6,7 +6,7 @@ public class Npc_AI : MonoBehaviour
 {
     public NavMeshAgent agent;
     public Transform player;
-    public int maxHealth = 100; //npc toplam canı
+    public int maxHealth = 100; 
     private int currentHealth;
 
     [Header("Mesafeler")]
@@ -14,15 +14,19 @@ public class Npc_AI : MonoBehaviour
     public float attackDistance = 3f;
     public float patrolRadius = 15f;
     public float patrolWaitTime = 2f;
-    public float attackRate = 1f; // 1 saniyede bir ateş et
+    public float attackRate = 1f;   
 
     [Header("Animasyon")]
     public Animator animator;
 
+    [Header("Audio")]
+    public AudioSource audioSource;   
+    public AudioClip gunshotSound;
+
     private Vector3 patrolTarget;
     private bool isPatrolling = true;
-    private bool isAttacking = false; // Ateş etme durumunu kontrol eder
-    private bool isDead = false;// Npc öldü mü kontrolü
+    private bool isAttacking = false;  
+    private bool isDead = false;       
 
     void Start()
     {
@@ -32,12 +36,13 @@ public class Npc_AI : MonoBehaviour
     }
     void Update()
     {
-        if (isDead) return; // ☠️ Öldüyse hiçbir şey yapma
+        if (isDead) return;   
+
         float distance = Vector3.Distance(transform.position, player.position);
         Vector3 direction = (player.position - transform.position).normalized;
         float angle = Vector3.Angle(transform.forward, direction);
 
-        if (angle < 160f)
+        if (angle < 160f) 
         {
             if (distance <= attackDistance)
             {
@@ -47,14 +52,14 @@ public class Npc_AI : MonoBehaviour
             {
                 StopCoroutine("AttackLoop");
                 isAttacking = false;
-                animator.SetBool("isShooting", false); // 🔥 Ekledik
+                animator.SetBool("isShooting", false); 
                 ChasePlayer();
             }
             else
             {
                 StopCoroutine("AttackLoop");
                 isAttacking = false;
-                animator.SetBool("isShooting", false); // 🔥 Ekledik
+                animator.SetBool("isShooting", false); 
                 Patrol();
             }
         }
@@ -62,7 +67,7 @@ public class Npc_AI : MonoBehaviour
         {
             StopCoroutine("AttackLoop");
             isAttacking = false;
-            animator.SetBool("isShooting", false); // 🔥 Ekledik
+            animator.SetBool("isShooting", false); 
             Patrol();
         }
     }
@@ -76,7 +81,6 @@ public class Npc_AI : MonoBehaviour
         if(currentHealth <= 0)
         {
             Die();
-
         }
     }
 
@@ -124,7 +128,6 @@ public class Npc_AI : MonoBehaviour
         {
             animator.SetBool("isRunning", false);
             animator.SetBool("isWalking", false);
-            // Bu kısım sayesinde koşudan, yürüyüşten veya idleden geçiş yapabilir
         }
     }
     IEnumerator AttackLoop()
@@ -135,17 +138,19 @@ public class Npc_AI : MonoBehaviour
         while (Vector3.Distance(transform.position, player.position) <= attackDistance)
         {
             Debug.Log("NPC ateş ediyor!");
+            player.GetComponent<PlayerControllerLogic>().ReceiveDamage(2); 
 
-            // Player'a hasar ver
-            player.GetComponent<PlayerControllerLogic>().ReceiveDamage(2); //bunu playercontrollerda eklemen gerekiyorrr!!!!!!!!!!!!
-
+            if (audioSource != null && gunshotSound != null)
+            {
+                audioSource.PlayOneShot(gunshotSound);
+            }
             yield return new WaitForSeconds(attackRate);
         }
 
-        // Oyuncu uzaklaştıysa hemen kovalamaya başla
+        
         isAttacking = false;
         animator.SetBool("isShooting", false);
-        ChasePlayer(); // 👈 anında koşmaya geçer
+        ChasePlayer();   
     }
     IEnumerator PatrolRoutine()
     {
@@ -172,8 +177,8 @@ public class Npc_AI : MonoBehaviour
         isDead = true;
         agent.isStopped = true;
         Debug.Log("NPC öldü!");
-
-        // 2 saniye sonra sahneden kaldır
-        Destroy(gameObject, 2f);
+        animator.SetTrigger("Die");
+        GetComponent<Npc_AI>().enabled = false;
+        Destroy(gameObject, 3f);
     }
 }
