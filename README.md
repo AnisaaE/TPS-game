@@ -35,6 +35,7 @@ Bu modüler yapı, kodun düzenli olmasını sağlar ve hem güncellemeleri hem 
 
 ---
 ⚙️ Oyun Mekanikleri
+---
 👨‍✈️ Oyuncu Kontrol Sistemi (PlayerControllerLogic.cs)
 ---
 * Hareket, nişan alma ve ateş etme işlemlerini yönetir.
@@ -64,16 +65,7 @@ Bu modüler yapı, kodun düzenli olmasını sağlar ve hem güncellemeleri hem 
 
 * Hasar alındığında titreşim efektli sağlık çubuğu (health bar) gösterilir.
 
-* Can sıfıra düştüğünde, ölüm animasyonu ve Game Over ekranı devreye girer.
-
-Temel Fonksiyonlar:
----
-
-* TakeDamage(int damage) — canı azaltır, animasyonu tetikler
-
-* Heal(int amount) — canı yeniler
-
-* Die() — ölüm animasyonunu başlatır, hareketi durdurur ve Game Over ekranını açar
+* Can sıfıra düştüğünde, Die() — ölüm animasyonunu başlatır, hareketi durdurur ve Game Over ekranını açar
 
 🤖 NPC Yapay Zekâ Sistemi (Npc_AI.cs)
 ---
