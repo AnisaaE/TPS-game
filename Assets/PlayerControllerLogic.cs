@@ -49,7 +49,6 @@ public class PlayerControllerLogic : MonoBehaviour
     private float pitch;
     private float smoothTurnVelocity;
 
-    // Diğer bileşen referansı
     private PlayerHealth playerHealth;
 
     private void Awake()
@@ -207,8 +206,7 @@ public class PlayerControllerLogic : MonoBehaviour
     }
 
 
-
-    // NPC seni vurduğunda PlayerHealth üzerinden çağrılacak:
+    // NPC player vurduğunda PlayerHealth üzerinden çağrılacak:
     public void ReceiveDamage(int amount)
     {
         if (playerHealth != null)
@@ -228,6 +226,12 @@ public class PlayerControllerLogic : MonoBehaviour
     {
         AlignShootOriginWithCamera();
     }
+    public void StopAllAudio()
+    {
+        if (audioSource != null && audioSource.isPlaying)
+        {
+            audioSource.Stop();
+        }
+    }
 
-    
 }

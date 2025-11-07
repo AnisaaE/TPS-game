@@ -26,6 +26,10 @@ public class EndGameTGR : MonoBehaviour
     {
         // Спиране на движението на играча
         var playerController = playerAnimator.GetComponent<PlayerControllerLogic>();
+        // Yьrьme sesini durdur
+
+        if (playerController != null)
+            playerController.StopAllAudio();
 
         playerAnimator.SetFloat("Speed", 0f);
       

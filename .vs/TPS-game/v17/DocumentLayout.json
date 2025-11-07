@@ -3,16 +3,20 @@
   "WorkspaceRootPath": "C:\\Users\\Rana Karag\u00F6l\\Documents\\GitHub\\TPS-game\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{3B85A5E9-B044-3B03-EF2A-B4E70F8A73B7}|Assembly-CSharp.csproj|c:\\users\\rana karag\u00F6l\\documents\\github\\tps-game\\assets\\scripts\\playerhealth.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3B85A5E9-B044-3B03-EF2A-B4E70F8A73B7}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\playerhealth.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3B85A5E9-B044-3B03-EF2A-B4E70F8A73B7}|Assembly-CSharp.csproj|c:\\users\\rana karag\u00F6l\\documents\\github\\tps-game\\assets\\scripts\\playercontrollerlogic.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B85A5E9-B044-3B03-EF2A-B4E70F8A73B7}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\playercontrollerlogic.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{3B85A5E9-B044-3B03-EF2A-B4E70F8A73B7}|Assembly-CSharp.csproj|C:\\Users\\Rana Karag\u00F6l\\Documents\\GitHub\\TPS-game\\assets\\scripts\\npc_ai.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{3B85A5E9-B044-3B03-EF2A-B4E70F8A73B7}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\npc_ai.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3B85A5E9-B044-3B03-EF2A-B4E70F8A73B7}|Assembly-CSharp.csproj|C:\\Users\\Rana Karag\u00F6l\\Documents\\GitHub\\TPS-game\\assets\\newcharacter\\playercontrollerlogic.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3B85A5E9-B044-3B03-EF2A-B4E70F8A73B7}|Assembly-CSharp.csproj|solutionrelative:assets\\newcharacter\\playercontrollerlogic.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3B85A5E9-B044-3B03-EF2A-B4E70F8A73B7}|Assembly-CSharp.csproj|C:\\Users\\Rana Karag\u00F6l\\Documents\\GitHub\\TPS-game\\assets\\scripts\\endgametgr.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B85A5E9-B044-3B03-EF2A-B4E70F8A73B7}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\endgametgr.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B85A5E9-B044-3B03-EF2A-B4E70F8A73B7}|Assembly-CSharp.csproj|C:\\Users\\Rana Karag\u00F6l\\Documents\\GitHub\\TPS-game\\assets\\scripts\\playerhealth.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B85A5E9-B044-3B03-EF2A-B4E70F8A73B7}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\playerhealth.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,7 +26,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Bookmark",
@@ -30,28 +34,40 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
               "Title": "PlayerControllerLogic.cs",
-              "DocumentMoniker": "C:\\Users\\Rana Karag\u00F6l\\Documents\\GitHub\\TPS-game\\Assets\\NewCharacter\\PlayerControllerLogic.cs",
-              "RelativeDocumentMoniker": "Assets\\NewCharacter\\PlayerControllerLogic.cs",
-              "ToolTip": "C:\\Users\\Rana Karag\u00F6l\\Documents\\GitHub\\TPS-game\\Assets\\NewCharacter\\PlayerControllerLogic.cs",
-              "RelativeToolTip": "Assets\\NewCharacter\\PlayerControllerLogic.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAA5AAAAAAAAAA==",
+              "DocumentMoniker": "C:\\Users\\Rana Karag\u00F6l\\Documents\\GitHub\\TPS-game\\Assets\\Scripts\\PlayerControllerLogic.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\PlayerControllerLogic.cs",
+              "ToolTip": "C:\\Users\\Rana Karag\u00F6l\\Documents\\GitHub\\TPS-game\\Assets\\Scripts\\PlayerControllerLogic.cs",
+              "RelativeToolTip": "Assets\\Scripts\\PlayerControllerLogic.cs",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-06T16:54:20.27Z"
+              "WhenOpened": "2025-11-07T11:03:30.31Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
+              "Title": "EndGameTGR.cs",
+              "DocumentMoniker": "C:\\Users\\Rana Karag\u00F6l\\Documents\\GitHub\\TPS-game\\Assets\\Scripts\\EndGameTGR.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\EndGameTGR.cs",
+              "ToolTip": "C:\\Users\\Rana Karag\u00F6l\\Documents\\GitHub\\TPS-game\\Assets\\Scripts\\EndGameTGR.cs",
+              "RelativeToolTip": "Assets\\Scripts\\EndGameTGR.cs",
+              "ViewState": "AgIAABMAAAAAAAAAAAAgwC4AAAA4AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-07T09:44:34.057Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "PlayerHealth.cs",
               "DocumentMoniker": "C:\\Users\\Rana Karag\u00F6l\\Documents\\GitHub\\TPS-game\\Assets\\Scripts\\PlayerHealth.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\PlayerHealth.cs",
               "ToolTip": "C:\\Users\\Rana Karag\u00F6l\\Documents\\GitHub\\TPS-game\\Assets\\Scripts\\PlayerHealth.cs",
               "RelativeToolTip": "Assets\\Scripts\\PlayerHealth.cs",
-              "ViewState": "AgIAAD4AAAAAAAAAAAAwwFsAAAAgAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAJMAAAA2AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-03T16:39:42.719Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-03T16:39:42.719Z"
             },
             {
               "$type": "Document",
@@ -61,7 +77,7 @@
               "RelativeDocumentMoniker": "Assets\\Scripts\\Npc_AI.cs",
               "ToolTip": "C:\\Users\\Rana Karag\u00F6l\\Documents\\GitHub\\TPS-game\\Assets\\Scripts\\Npc_AI.cs",
               "RelativeToolTip": "Assets\\Scripts\\Npc_AI.cs",
-              "ViewState": "AgIAAIwAAAAAAAAAAAAuwKAAAAAuAAAAAAAAAA==",
+              "ViewState": "AgIAAEIAAAAAAAAAAAAowFIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-03T13:17:11.936Z"
             }
