@@ -22,43 +22,13 @@ Görev, ajan çocuğa ulaştığında kısa bir bitiş animasyonu sekansı ile s
 Proje, anlaşılabilirlik ve ölçeklenebilirlik esas alınarak yapılandırılmıştır:
 
 <p align="center">
-  <img src="https://github.com/AnisaaE/TPS-game/blob/main/Assets/Sema2.png?raw=true" width="550" height="400">
+  <img src="https://github.com/AnisaaE/TPS-game/blob/main/Assets/Sema1.png?raw=true" width="550" height="500">
 </p>
 <p align="center">
-  <img src="https://github.com/AnisaaE/TPS-game/blob/main/Assets/Sema2.png?raw=true" width="550 "height="300" >
+  <img src="https://github.com/AnisaaE/TPS-game/blob/main/Assets/Sema2.png?raw=true" width="550 "height="500" >
 </p>
                    
-Assets/
-│
-├── Scripts/
-│ ├── Player/
-│ │ ├── PlayerControllerLogic.cs
-│ │ └── PlayerHealth.cs
-│ │
-│ ├── NPC/
-│ │ └── Npc_AI.cs
-│ │
-│ ├── Boy/
-│ │ └── EndGameTGR.cs
-│ │
-│ ├── UI/
-│ │ └── UIManager.cs
-│ │
-│ └── GameManager.cs
-│
-├── Scenes/
-│ └── DesertVillage.unity
-│
-├── Prefabs/
-│ ├── Player.prefab
-│ ├── NPC.prefab
-│ ├── Boy.prefab
-│ └── Environment.prefab
-│
-└── Animations/
-├── Player/
-├── NPC/
-└── Boy/
+
 
 Ana karakterlerin her biri — Player (oyuncu), NPC (düşman) ve Boy (çocuk) — kendine ait bir Animator Controller ve bağımsız bir klasöre sahiptir.
 Bu modüler yapı, kodun düzenli olmasını sağlar ve hem güncellemeleri hem de hata ayıklamayı kolaylaştırır.
