@@ -114,13 +114,18 @@ Oyuncu yaklaştığında:
 
 * NpcAnimator: Patrol, Run, Shoot, Death
 
-* BoyAnimator: Idle, Dance (Final sahnesi)
+* RemyAnimator: Idle, Dance (Final sahnesi)
 
 Tüm geçişler, yumuşak animasyon karışımı (blend) sağlamak için Animator parametreleri ile kontrol edilir:
 animator.SetBool("isRunning", true);
 animator.SetTrigger("Dance");
 
-## Game Flow diagram
+🔊 Ses Mekanikleri
+---
+Oyunda hem oyuncu (Player) hem de düşman (NPC) için etkileşimli ses efektleri uygulanmıştır.
+Silah ateşlendiğinde, her iki taraf için de gerçekçi shooting sesleri oynatılır.
+Oyuncu yürürken ayak sesleri (footstep) ortama uygun olarak duyulur ve bu sesler, karakterin hareket hızına göre senkronize edilir.
+Görev sonunda ise kurtarılan çocukla birlikte gerçekleşen “end game” dans sahnesinde özel bir müzik efekti devreye girer, bu da oyuna sinematik bir atmosfer kazandırır.
 
 🧱 Yazılım Mimarisi ve Kullanılan Teknikler
 --- 
