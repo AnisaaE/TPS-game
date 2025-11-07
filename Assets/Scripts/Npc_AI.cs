@@ -19,6 +19,10 @@ public class Npc_AI : MonoBehaviour
     [Header("Animasyon")]
     public Animator animator;
 
+    [Header("Audio")]
+    public AudioSource audioSource;   
+    public AudioClip gunshotSound;
+
     private Vector3 patrolTarget;
     private bool isPatrolling = true;
     private bool isAttacking = false; // Ateş etme durumunu kontrol eder
@@ -139,6 +143,11 @@ public class Npc_AI : MonoBehaviour
             // Player'a hasar ver
             player.GetComponent<PlayerControllerLogic>().ReceiveDamage(2); //bunu playercontrollerda eklemen gerekiyorrr!!!!!!!!!!!!
 
+            // Gunshot sesi çal
+            if (audioSource != null && gunshotSound != null)
+            {
+                audioSource.PlayOneShot(gunshotSound);
+            }
             yield return new WaitForSeconds(attackRate);
         }
 
