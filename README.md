@@ -160,22 +160,17 @@ NavMesh ile seviye tasarımı, AI hareketinin kararlılığını ve verimliliği
 📚 Kaynaklar ve Esinlenilen Çalışmalar
 ---
 
-Literatürde yer alan birçok Unity tabanlı FPS/TPS projesi, genellikle tek bir bileşene odaklanmıştır — örneğin yalnızca karakter hareketi veya yalnızca yapay zekâ (AI) davranışları üzerine.
+Literatürde yer alan birçok Unity tabanlı TPS projesi, genellikle tek bir bileşene odaklanmıştır — örneğin yalnızca karakter hareketi veya yalnızca yapay zekâ (AI) davranışları üzerine.
 Ancak bu proje, bu yaklaşımlardan farklı olarak, AI tabanlı düşman davranışı, kamera sistemleri (Cinemachine) ve UI (kullanıcı arayüzü) entegrasyonunu tek bir bütünleşik oyun döngüsü içinde bir araya getirmiştir.
 
 Bu çok katmanlı entegrasyon ve gerçek zamanlı savaş optimizasyonu, çalışmamızı yalnızca öğretici düzeydeki örneklerden ayırmakla kalmamış, aynı zamanda oyun mekaniği, yapay zekâ ve kullanıcı deneyimi arasındaki dengeyi profesyonel düzeyde kurmamızı sağlamıştır.
 
 Kaynakça ve Esinlenilen Çalışmalar:
 ---
-
-Unity Learn: Third-Person Controller with Cinemachine — Kamera geçişleri ve oyuncu kontrolü üzerine temel yapı
-https://docs.unity3d.com/Packages/com.unity.cinemachine@2.7/manual/index.html
-https://docs.unity3d.com/Packages/com.unity.inputsystem@1.15/manual/index.html
-
-Brackeys: AI Patrol and Chase System Tutorial — NPC devriye ve kovalama davranışlarının mantıksal temeli
-https://docs.unity3d.com/6000.2/Documentation/ScriptReference/AI.NavMesh.html
-
-GDC Talks: Responsive Combat and Player Feedback in Action Games — Saldırı ve hasar geri bildirimi sistemlerinde etkileşim odaklı yaklaşım
+Cinemachine Documentation-https://docs.unity3d.com/Packages/com.unity.cinemachine@2.7/manual/index.html
+Unity New Input System Documentation-https://docs.unity3d.com/Packages/com.unity.inputsystem@1.15/manual/index.html
+Unity documentation  NavMash-https://docs.unity3d.com/6000.2/Documentation/ScriptReference/AI.NavMesh.html
+Third Person Shooter (Unity Tutorial-YouTube)-https://www.youtube.com/watch?v=6yV2YU8_dRk&list=PLX_yguE0Oa8QmfmFiMM9_heLBeSA6sNKx
 
 💡 Özgün Katkı
 ---
