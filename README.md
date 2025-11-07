@@ -91,16 +91,16 @@ Bu modüler yapı, kodun düzenli olmasını sağlar ve hem güncellemeleri hem 
 
 * Coroutine tabanlı saldırı hızı kontrolü
 
-👦 Çocuk Kurtarma Sistemi (EndGameTGR.cs)
+👦 Esir Kurtarma Sistemi (EndGameTGR.cs)
 ---
 
-* Çocuk (Boy) objesine bağlıdır.
+* Esir (Remy) objesine bağlıdır.
 
 * Oyuncu belirli bir alana girdiğinde trigger collider ile algılama yapılır.
 
 Oyuncu yaklaştığında:
 
-* Oyuncu ve çocuk birbirlerine döner.
+* Oyuncu ve Remy birbirlerine döner.
 
 * Her ikisi de “dans” / kutlama animasyonu oynatır.
 
