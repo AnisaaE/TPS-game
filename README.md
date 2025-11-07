@@ -22,9 +22,11 @@ Görev, ajan çocuğa ulaştığında kısa bir bitiş animasyonu sekansı ile s
 Proje, anlaşılabilirlik ve ölçeklenebilirlik esas alınarak yapılandırılmıştır:
 
 <p align="center">
-  <img src="https://github.com/AnisaaE/TPS-game/blob/main/Assets/Sema2.png?raw=true" width="600">
+  <img src="https://github.com/AnisaaE/TPS-game/blob/main/Assets/Sema2.png?raw=true" width="550" height="400">
 </p>
-
+<p align="center">
+  <img src="https://github.com/AnisaaE/TPS-game/blob/main/Assets/Sema2.png?raw=true" width="550 "height="300" >
+</p>
                    
 Assets/
 │
@@ -197,8 +199,11 @@ Kaynakça ve Esinlenilen Çalışmalar:
 ---
 
 Unity Learn: Third-Person Controller with Cinemachine — Kamera geçişleri ve oyuncu kontrolü üzerine temel yapı
+https://docs.unity3d.com/Packages/com.unity.cinemachine@2.7/manual/index.html
+https://docs.unity3d.com/Packages/com.unity.inputsystem@1.15/manual/index.html
 
 Brackeys: AI Patrol and Chase System Tutorial — NPC devriye ve kovalama davranışlarının mantıksal temeli
+https://docs.unity3d.com/6000.2/Documentation/ScriptReference/AI.NavMesh.html
 
 GDC Talks: Responsive Combat and Player Feedback in Action Games — Saldırı ve hasar geri bildirimi sistemlerinde etkileşim odaklı yaklaşım
 
